@@ -1,75 +1,81 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\cmd;
+namespace _64FF00\PurePerms\Commands;
 
-use CortexPE\Commando\BaseCommand;
-use CortexPE\Commando\args\RawStringArgument;
+use _64FF00\PurePerms\PurePerms;
+
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
+use pocketmine\plugin\PluginOwned;
+use pocketmine\plugin\PluginOwnedTrait;
 use pocketmine\utils\TextFormat;
-use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
-class AddGroup extends BaseCommand {
-	/*
-		MPEPerms by XackiGiFF (Remake by @mpe_coders from PurePerms by #64FF00)
+class AddRank extends Command implements PluginOwned
+{
+	use PluginOwnedTrait;
+    /*
+        PurePerms by 64FF00 (Twitter: @64FF00)
 
-		╔═╗╔═╗╔═══╗╔═══╗     ╔═══╗╔═══╗╔═══╗╔═╗╔═╗╔═══╗
-		║║╚╝║║║╔═╗║║╔══╝     ║╔═╗║║╔══╝║╔═╗║║║╚╝║║║╔═╗║
-		║╔╗╔╗║║╚═╝║║╚══╗     ║╚═╝║║╚══╗║╚═╝║║╔╗╔╗║║╚══╗
-		║║║║║║║╔══╝║╔══╝     ║╔══╝║╔══╝║╔╗╔╝║║║║║║╚══╗║
-		║║║║║║║║───║╚══╗     ║║───║╚══╗║║║╚╗║║║║║║║╚═╝║
-		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
-	*/
+          888  888    .d8888b.      d8888  8888888888 8888888888 .d8888b.   .d8888b.
+          888  888   d88P  Y88b    d8P888  888        888       d88P  Y88b d88P  Y88b
+        888888888888 888          d8P 888  888        888       888    888 888    888
+          888  888   888d888b.   d8P  888  8888888    8888888   888    888 888    888
+          888  888   888P "Y88b d88   888  888        888       888    888 888    888
+        888888888888 888    888 8888888888 888        888       888    888 888    888
+          888  888   Y88b  d88P       888  888        888       Y88b  d88P Y88b  d88P
+          888  888    "Y8888P"        888  888        888        "Y8888P"   "Y8888P"
+    */
 
-	protected const ARGUMENT_GROUP_NAME = "group";
+    private $plugin;
 
-	protected function prepare(): void {
+    /**
+     * @param PurePerms $plugin
+     * @param $name
+     * @param $description
+     */
+    public function __construct(PurePerms $plugin, $name, $description)
+    {
+        $this->plugin = $plugin;
+        parent::__construct($name, $description);
+        $this->setPermission("pperms.command.addrank");
+    }
 
-		$this->setPermission(MPEPermsPermissions::COMMAND_ADDGROUP_PERMISSION);
-		try {
-            $this->registerArgument(0, new RawStringArgument(AddGroup::ARGUMENT_GROUP_NAME));
-        } catch (Exception) {
+    /**
+     * @param CommandSender $sender
+     * @param $label
+     * @param array $args
+     * @return bool
+     */
+    public function execute(CommandSender $sender, string $label, array $args) : bool
+    {
+        if(!$this->testPermission($sender))
+            return false;
+        if(!isset($args[0]) || count($args) > 1)
+        {
+            $sender->sendMessage(TextFormat::GREEN . PurePerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.addrank.usage"));
+            return true;
         }
-		$this->setErrorFormat(0x02, $this->getTemplate("cmds.addgroup.usage", true, []) );
-		$this->setErrorFormat(0x03, $this->getTemplate("cmds.addgroup.usage", true, []) );
 
-
-	}
-	
-	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
-
-		$group = $args["group"];
-		
-		if(!$this->testPermission($sender)){
-			return;
-		}
-
-		$result = $this->getOwningPlugin()->addGroup($group);
-
-		if($result === MPEPerms::SUCCESS){
-			$this->sendTemplate($sender, "cmds.addgroup.messages.group_added_successfully", true, [$group]);
-			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.group_added_successfully", [$group]));
-		}elseif($result === MPEPerms::ALREADY_EXISTS){
-			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.group_already_exists", [$group]));
-		}else{
-			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.invalid_group_name", [$group]));
-		}
-
-		return;
-
-	}
-
-	public function getPlugin() : Plugin{
-		return $this->getOwningPlugin();
-	}
-
-	public function getTemplate(string $template, bool $type = true, $data = []): string {
-		($type) ? $format = TextFormat::GREEN : $format = TextFormat::RED;
-		return $format . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage($template, $data);
-	}
-
-	public function sendTemplate($sender, string $template, bool $type = true, $data = []): void {
-		$sender->sendMessage($this->getTemplate($template, $type = true));
-	}
+        $result = $this->plugin->addGroup($args[0]);
+        if($result === PurePerms::SUCCESS)
+        {
+            $sender->sendMessage(TextFormat::GREEN . PurePerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.addrank.messages.rank_added_successfully", $args[0]));
+        }
+        elseif($result === PurePerms::ALREADY_EXISTS)
+        {
+            $sender->sendMessage(TextFormat::RED . PurePerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.rank.messages.rank_already_exists", $args[0]));
+        }
+        else
+        {
+            $sender->sendMessage(TextFormat::RED . PurePerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.addrank.messages.invalid_rank_name", $args[0]));
+        }
+        
+        return true;
+    }
+    
+    public function getPlugin() : Plugin
+    {
+        return $this->plugin;
+    }
 }
