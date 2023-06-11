@@ -30,8 +30,8 @@ mysql-settings:
   db: "YourDBNameGoesHere"
   
 # Special thanks to @jazzwhistle for helping me with this cool feature! #JAZZWHISTLE-FTW
-# Ranks that can only be set on console
-# Also, users with a superadmin-rank can only have their rank changed on console
+# Groups that can only be set on console
+# Also, users with a superadmin-group can only have their group changed on console
 # - array
-superadmin-ranks: ["OP"]
+superadmin-groups: ["OP"]
 ...
