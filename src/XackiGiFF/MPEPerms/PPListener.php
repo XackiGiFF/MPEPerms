@@ -38,7 +38,7 @@ class PPListener implements Listener
      * @param PPGroupChangedEvent $event
      * @priority LOWEST
      */
-    public function onGroupChanged(PPgroupChangedEvent $event)
+    public function onGroupChanged(PPGroupChangedEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->updatePermissions($player);

@@ -4,7 +4,7 @@ namespace XackiGiFF\MPEPerms\DataManager;
 
 use XackiGiFF\MPEPerms\PPGroup;
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\EventManager\PPgroupChangedEvent;
+use XackiGiFF\MPEPerms\EventManager\PPGroupChangedEvent;
 
 use pocketmine\player\IPlayer;
 
@@ -154,7 +154,7 @@ class UserDataManager
             $this->setWorldData($player, $WorldName, $worldData);
         }
 
-        $event = new PPgroupChangedEvent($this->plugin, $player, $group, $WorldName);
+        $event = new PPGroupChangedEvent($this->plugin, $player, $group, $WorldName);
 
         $event->call();
     }

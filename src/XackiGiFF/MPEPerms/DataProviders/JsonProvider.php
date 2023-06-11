@@ -32,7 +32,6 @@ class JsonProvider implements ProviderInterface
      */
     public function __construct(protected MPEPerms $plugin)
     {
-        parent::__construct($plugin);
         $this->plugin->saveResource("groups.yml");
         $this->groups = new Config($this->plugin->getDataFolder() . "groups.yml", Config::YAML, []);
         $this->userDataFolder = $this->plugin->getDataFolder() . "players/";

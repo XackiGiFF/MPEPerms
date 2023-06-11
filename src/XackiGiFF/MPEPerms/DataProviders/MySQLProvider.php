@@ -31,7 +31,6 @@ class MySQLProvider implements ProviderInterface
      */
     public function __construct(protected MPEPerms $plugin)
     {
-        parent::__construct($plugin);
         $mySQLSettings = $this->plugin->getConfigValue("mysql-settings");
         if(!isset($mySQLSettings["host"]) || !isset($mySQLSettings["port"]) || !isset($mySQLSettings["user"]) || !isset($mySQLSettings["password"]) || !isset($mySQLSettings["db"]))
             throw new RuntimeException("Failed to connect to the MySQL database: Invalid MySQL settings");

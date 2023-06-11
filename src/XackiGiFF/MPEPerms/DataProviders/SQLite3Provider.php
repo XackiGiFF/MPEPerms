@@ -28,7 +28,6 @@ class SQLite3Provider implements ProviderInterface
      */
     public function __construct(protected MPEPerms $plugin)
     {
-        parent::__construct($plugin);
         $this->db = new \SQLite3($plugin->getDataFolder()."MPEPerms.db");
         $this->db->exec("");
         $this->loadGroupsData();
