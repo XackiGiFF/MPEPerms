@@ -66,10 +66,4 @@ permissions:
     description: Allows you to remove a permission from the user.
   mperms.command.usrinfo:
     default: op
-    description: Allows you to see info about a user.
-  mperms.noeul:
-    default: true
-    description: Allows you to access all 'Noeul' related features.
-  mperms.noeul.ppsudo:
-    default: true
-    description: Allows you to use the Noeul 'ppsudo' command.
+    description: "Allows you to remove a permission from the user."
