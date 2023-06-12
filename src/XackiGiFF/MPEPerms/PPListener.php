@@ -2,8 +2,8 @@
 
 namespace XackiGiFF\MPEPerms;
 
-use XackiGiFF\MPEPerms\EventManager\PPGroupChangedEvent;
-use XackiGiFF\MPEPerms\EventManager\PPGroupExpiredEvent;
+use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
+use XackiGiFF\MPEPerms\EventManager\MPGroupExpiredEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\server\CommandEvent;
@@ -35,10 +35,10 @@ class PPListener implements Listener
     }
 
     /**
-     * @param PPGroupChangedEvent $event
+     * @param MPGroupChangedEvent $event
      * @priority LOWEST
      */
-    public function onGroupChanged(PPGroupChangedEvent $event)
+    public function onGroupChanged(MPGroupChangedEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->updatePermissions($player);
@@ -108,10 +108,10 @@ class PPListener implements Listener
     }
 
     /**
-     * @param PPgroupExpiredEvent $event
+     * @param MPgroupExpiredEvent $event
      * @priority LOWEST
      */
-    public function ongroupExpired(PPgroupExpiredEvent $event)
+    public function ongroupExpired(MPgroupExpiredEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->setGroup($player, $this->plugin->getDefaultGroup());

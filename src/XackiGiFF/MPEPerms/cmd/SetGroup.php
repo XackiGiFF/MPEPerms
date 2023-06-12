@@ -25,10 +25,25 @@ class SetGroup extends BaseCommand
 		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
 	*/
 
+	protected const ARGUMENT_PLAYER_NAME = "player_name";
+	protected const ARGUMENT_GROUP_NAME  = "group_name";
+	protected const ARGUMENT_EXP_TIME = "exp_time";
+	protected const ARGUMENT_WORLD_NAME  = "world_name";
+
 	protected function prepare(): void {
 		// This is where we'll register our arguments and subcommands
 
 		$this->setPermission(MPEPermsPermissions::COMMAND_SETGROUP_PERMISSION);
+		try {
+			$this->registerArgument(0, new RawStringArgument(SetGroup::ARGUMENT_PLAYER_NAME));
+            $this->registerArgument(1, new RawStringArgument(SetGroup::ARGUMENT_GROUP_NAME));
+			$this->registerArgument(2, new RawStringArgument(SetGroup::ARGUMENT_EXP_TIME, true));
+			$this->registerArgument(3, new RawStringArgument(SetGroup::ARGUMENT_WORLD_NAME, true));
+        } catch (Exception) {
+        }
+		$this->setErrorFormat(0x01, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
+		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
+		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
 
 	}
 
@@ -37,41 +52,35 @@ class SetGroup extends BaseCommand
 			return;
 		}
 
-		if(count($args) < 2 || count($args) > 4){
-			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.usage"));
+		$player = $this->getOwningPlugin()->getPlayer($args["player_name"]);
 
-			return;
-		}
-
-		$player = $this->getOwningPlugin()->getPlayer($args[0]);
-
-		$group = $this->getOwningPlugin()->getGroup($args[1]);
+		$group = $this->getOwningPlugin()->getGroup($args["group_name"]);
 
 		if($group === null){
-			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.group_not_exist", [$args[1]]));
+			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.group_not_exist", [$args["group_name"]]));
 
 			return;
 		}
 
-		if(isset($args[2])) {
-			$expTime = $this->getOwningPlugin()->date2Int($args[2]);
+		if(isset($args["exp_time"])) {
+			$expTime = $this->getOwningPlugin()->date2Int($args["exp_time"]); // Format [0-9]d[0-9]h[0-9]m // Examlpe: 1d23h59m - is 1 Day, 23 Hour and 59 minutes
 			$sender->sendMessage("Время окончания: " .$expTime. ".");
 		} else {
 		    $expTime = -1;
-		    $sender->sendMessage("не указано время. Бессрочно.");
+		    $sender->sendMessage("Не указано время. Бессрочно.");
 		}
 		$levelName = null;
 
-		if(isset($args[3])){
-			$level = $this->getOwningPlugin()->getServer()->getLevelByName($args[3]);
+		if(isset($args["world_name"])){
+			$level = $this->getOwningPlugin()->getServer()->getWorldManager()->getWorldByName($args["world_name"]);
 
 			if($level === null){
-				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.level_not_exist", [$args[3]]));
+				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.level_not_exist", [$args["world_name"]]));
 
 				return;
 			}
 
-			$levelName = $level->getName();
+			$levelName = $level->getFolderName();
 		}
 
 		$superAdminRanks = $this->getOwningPlugin()->getConfigValue("superadmin-ranks");
@@ -106,10 +115,5 @@ class SetGroup extends BaseCommand
 		}
 
 		return;
-    }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
     }
 }

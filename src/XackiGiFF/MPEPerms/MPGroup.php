@@ -5,7 +5,7 @@ namespace XackiGiFF\MPEPerms;
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 
 
-class PPGroup
+class MPGroup
 {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from PurePerms by #64FF00)
@@ -36,11 +36,11 @@ class PPGroup
 	}
 
 	/**
-	 * @param PPGroup $group
+	 * @param MPGroup $group
 	 *
 	 * @return bool
 	 */
-	public function addParent(PPGroup $group){
+	public function addParent(MPGroup $group){
 		$tempGroupData = $this->getData();
 
 		if($this === $group || in_array($this->getName(), $group->getParentGroups()))
@@ -104,7 +104,7 @@ class PPGroup
 			return [];
 		}
 
-		/** @var PPGroup $parentGroup */
+		/** @var MPGroup $parentGroup */
 		foreach($this->getParentGroups() as $parentGroup){
 			$parentPermissions = $parentGroup->getGroupPermissions($levelName);
 
@@ -137,7 +137,7 @@ class PPGroup
 	}
 
 	/**
-	 * @return PPGroup[]
+	 * @return MPGroup[]
 	 */
 	public function getParentGroups(){
 		if($this->parents === []){
@@ -210,11 +210,11 @@ class PPGroup
 	}
 
 	/**
-	 * @param PPGroup $group
+	 * @param MPGroup $group
 	 *
 	 * @return bool
 	 */
-	public function removeParent(PPGroup $group){
+	public function removeParent(MPGroup $group){
 		$tempGroupData = $this->getData();
 
 		$tempGroupData["inheritance"] = array_diff($tempGroupData["inheritance"], [$group->getName()]);
@@ -261,7 +261,7 @@ class PPGroup
 			$this->setWorldData($levelName, $worldData);
 		}
 	}
-
+	
 	/**
 	 * @param string      $permission
 	 * @param string|null $levelName

@@ -1,7 +1,7 @@
 <?php
 namespace XackiGiFF\MPEPerms\DataProviders;
 
-use XackiGiFF\MPEPerms\PPGroup;
+use XackiGiFF\MPEPerms\MPGroup;
 use XackiGiFF\MPEPerms\MPEPerms;
 use pocketmine\player\IPlayer;
 
@@ -38,7 +38,7 @@ class SQLite3Provider implements ProviderInterface
         //
     }
 
-    public function getGroupData(PPGroup $group){
+    public function getGroupData(MPGroup $group){
     }
 
     public function getGroupsData(){
@@ -50,7 +50,7 @@ class SQLite3Provider implements ProviderInterface
     public function getUsers(){
     }
 
-    public function setGroupData(PPGroup $group, array $tempGroupData){
+    public function setGroupData(MPGroup $group, array $tempGroupData){
     }
 
     public function setGroupsData(array $tempGroupsData){

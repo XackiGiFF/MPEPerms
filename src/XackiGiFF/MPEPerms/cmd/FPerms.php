@@ -105,9 +105,4 @@ class FPerms extends BaseCommand
         
         return;
     }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
-    }
 }

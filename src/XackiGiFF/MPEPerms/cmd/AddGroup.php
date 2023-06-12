@@ -58,5 +58,4 @@ class AddGroup extends BaseCommand
 
 		return;
     }
-    
 }

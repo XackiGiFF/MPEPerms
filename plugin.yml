@@ -2,17 +2,17 @@
 
 name: MPEPerms
 main: XackiGiFF\MPEPerms\MPEPerms
-version: 1.0.0
+version: 1.0.0-dev
 api: [ 5.0.0 ]
 load: POSTWORLD
 author: "64FF00 & ProjectInfinity | Remake to API 5.0.0 by XackiGiFF"
-website: https://github.com/PurePlugins/MPErePerms
+website: https://github.com/XackiGiFF/MPEPerms
 permissions:
   MPEPerms:
-    description: 'MPErePerms by 64FF00! (Twitter: @64FF00)'
+    description: 'MPEPerms by XackiGiFF!'
   mperms.command:
     default: op
-    description: Allows you to use all MPErePerms commands.
+    description: Allows you to use all MPEPerms commands.
   mperms.command.grpinfo:
     default: op
     description: Allows you to see an info of group
@@ -67,3 +67,9 @@ permissions:
   mperms.command.usrinfo:
     default: op
     description: "Allows you to remove a permission from the user."
+  mperms.noeul:
+    default: true
+    description: Allows you to access all 'Noeul' related features.
+  mperms.noeul.ppsudo:
+    default: true
+    description: Allows you to use the Noeul 'ppsudo' command.

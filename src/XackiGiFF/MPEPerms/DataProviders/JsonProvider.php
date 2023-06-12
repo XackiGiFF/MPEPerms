@@ -3,7 +3,7 @@
 namespace XackiGiFF\MPEPerms\DataProviders;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\PPGroup;
+use XackiGiFF\MPEPerms\MPGroup;
 
 use pocketmine\player\IPlayer;
 
@@ -25,8 +25,6 @@ class JsonProvider implements ProviderInterface
 
     private $groups, $userDataFolder;
 
-    private MPEPerms $plugin;
-
     /**
      * @param MPEPerms $plugin
      */
@@ -39,10 +37,10 @@ class JsonProvider implements ProviderInterface
             @mkdir($this->userDataFolder, 0777, true);
     }
     /**
-     * @param PPGroup $group
+     * @param MPGroup $group
      * @return mixed
      */
-    public function getGroupData(PPGroup $group)
+    public function getGroupData(MPGroup $group)
     {
         $groupName = $group->getName();
 
@@ -80,7 +78,7 @@ class JsonProvider implements ProviderInterface
         {
             if(!file_exists($this->userDataFolder . strtolower($userName) . ".json"))
             {
-                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::YAML, [
+                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::JSON, [
                     "userName" => $userName,
                     "group" => $this->plugin->getDefaultGroup()->getName(),
                     "permissions" => [],
@@ -90,7 +88,7 @@ class JsonProvider implements ProviderInterface
             }
             else
             {
-                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::YAML, [
+                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::JSON, [
                 ]);
             }
         }
@@ -98,7 +96,7 @@ class JsonProvider implements ProviderInterface
         {
             if(file_exists($this->userDataFolder . strtolower($userName) . ".json"))
             {
-                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::YAML, [
+                return new Config($this->userDataFolder . strtolower($userName) . ".json", Config::JSON, [
                 ]);
             }
             else
@@ -130,10 +128,10 @@ class JsonProvider implements ProviderInterface
     }
 
     /**
-     * @param PPGroup $group
+     * @param MPGroup $group
      * @param array $tempGroupData
      */
-    public function setGroupData(PPGroup $group, array $tempGroupData)
+    public function setGroupData(MPGroup $group, array $tempGroupData)
     {
         $groupName = $group->getName();
         $this->groups->set($groupName, $tempGroupData);

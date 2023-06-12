@@ -3,7 +3,7 @@
 namespace XackiGiFF\MPEPerms\DataProviders;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\PPGroup;
+use XackiGiFF\MPEPerms\MPGroup;
 
 use pocketmine\player\IPlayer;
 
@@ -40,10 +40,10 @@ class DefaultProvider implements ProviderInterface
     }
 
     /**
-     * @param PPGroup $group
+     * @param MPGroup $group
      * @return mixed
      */
-    public function getGroupData(PPGroup $group)
+    public function getGroupData(MPGroup $group)
     {
         $groupName = $group->getName();
         if(!isset($this->getGroupsData()[$groupName]) || !is_array($this->getGroupsData()[$groupName])) return [];
@@ -94,10 +94,10 @@ class DefaultProvider implements ProviderInterface
     }
 
     /**
-     * @param PPGroup $group
+     * @param MPGroup $group
      * @param array $tempGroupData
      */
-    public function setGroupData(PPGroup $group, array $tempGroupData)
+    public function setGroupData(MPGroup $group, array $tempGroupData)
     {
         $groupName = $group->getName();
         $this->groups->set($groupName, $tempGroupData);

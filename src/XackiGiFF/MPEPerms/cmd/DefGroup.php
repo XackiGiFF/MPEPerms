@@ -49,7 +49,7 @@ class DefGroup extends BaseCommand
 		}
 
 		$group_name = $this->getOwningPlugin()->getGroup($args["group_name"]);
-		$world_name = (isset($args[1])) ? $args["world_name"] : null;
+		$world_name = (isset($args["world_name"])) ? $args["world_name"] : null;
 
 
 		if($group_name === null){
@@ -70,6 +70,7 @@ class DefGroup extends BaseCommand
 			}
 
 			$levelName = $level->getFolderName();
+			var_dump($levelName);
 		}
 
 		$this->getOwningPlugin()->setDefaultGroup($group_name, $levelName);
@@ -77,10 +78,5 @@ class DefGroup extends BaseCommand
 		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.defgroup.messages.defgroup_successfully", [$args["group_name"]]));
 
 		return;
-    }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
     }
 }

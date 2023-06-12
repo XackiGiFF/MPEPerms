@@ -12,6 +12,8 @@ use CortexPE\Commando\args\RawStringArgument;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
+use pocketmine\plugin\PluginBase;
+
 class MPInfo extends BaseCommand
 {
 	/*
@@ -38,18 +40,16 @@ class MPInfo extends BaseCommand
 
 		$author = $this->getOwningPlugin()->getDescription()->getAuthors()[0];
 		$version = $this->getOwningPlugin()->getDescription()->getVersion();
+		$commandmap = $this->getOwningPlugin()->getServer()->getCommandMap();
 
-		if($sender instanceof ConsoleCommandSender){
-			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.mpinfo.messages.mpinfo_console", [$version, $author]));
-		}else{
-			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.mpinfo.messages.mpinfo_player", [$version, $author]));
+		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.mpinfo.messages.mpinfo_player", [$version, $author]));
+		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.mpinfo.messages.plugin_cmds_list", [($this->getOwningPlugin() instanceof PluginBase) ? $this->getOwningPlugin()->getName(): 'PocketMine-MP']));
+		$commands = $this->getOwningPlugin()->getAPI()->getCommands();
+		foreach ($commands as $command => $keys){
+
+			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' - /' . $commandmap->getCommand($command)->getName() . " - " . $commandmap->getCommand($command)->getDescription());
 		}
 
 		return;
-    }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
     }
 }

@@ -8,14 +8,15 @@
 # - json (JSON Database)
 # - mysql (MYSQL Database) (Temporarily removed)
 # - sqlite3 (SQLITe3 Database)
-data-provider: json
+# - yamlv1 (YamlV1 Database)
+data-provider: yamlv1
 
 disable-op: false
 
 # Set the default language for PurePerms
-# - en
+# - ru
 # English message resource by @64FF00 and @Samueljh1 (GitHub)
-default-language: en
+default-language: ru
 
 # Setting this option will allow you to use per-world permissions
 # - true / false

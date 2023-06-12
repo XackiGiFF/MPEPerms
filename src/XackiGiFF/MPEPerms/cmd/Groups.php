@@ -44,9 +44,4 @@ class Groups extends BaseCommand
 
 		return;
     }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
-    }
 }

@@ -31,35 +31,33 @@ use XackiGiFF\MPEPerms\MPEPerms;
 final class CommandsRegisterAPI extends MPEPermsAPI
 {
     public function __construct(protected MPEPerms $plugin){
-		parent::__construct($plugin);
-        $this->registerCommands();
 	}
 
-    public static function registerCommands(): void{
+    public function registerCommands(): void{
 
-		$commandMap = self::getPlugin()->getServer()->getCommandMap();
+		$commandMap = $this->plugin->getServer()->getCommandMap();
 
-		//if(self::getPlugin()->getNoeulAPI()->isNoeulEnabled())
-			//$commandMap->register("MPEPerms", new MPSudo($this, "ppsudo", self::getPlugin()->getMessage("cmds.mpsudo.desc") ));
+		//if($this->plugin->getNoeulAPI()->isNoeulEnabled())
+			//$commandMap->register("MPEPerms", new MPSudo($this, "ppsudo", $this->plugin->getMessage("cmds.mpsudo.desc") ));
 			// Лучше не включайте это, если не знаете, как пофикстить полное удаление всех прав у игрока после выхода из аккаунта.
 		
-		$commandMap->register("MPEPerms", new AddGroup(self::getPlugin(), "addgroup", self::getPlugin()->getMessage("cmds.addgroup.desc") ));
-		//$commandMap->register("MPEPerms", new AddParent(self::getPlugin(), "addparent", self::getPlugin()->getMessage("cmds.addparent.desc") ));
-		$commandMap->register("MPEPerms", new DefGroup(self::getPlugin(), "defgroup", self::getPlugin()->getMessage("cmds.defgroup.desc") ));
-		$commandMap->register("MPEPerms", new FPerms(self::getPlugin(), "fperms", self::getPlugin()->getMessage("cmds.fperms.desc") ));
-		$commandMap->register("MPEPerms", new Groups(self::getPlugin(), "groups", self::getPlugin()->getMessage("cmds.groups.desc") ));
-		//$commandMap->register("MPEPerms", new GrpInfo(self::getPlugin(), "grpinfo", self::getPlugin()->getMessage("cmds.grpinfo.desc") ));
-		//$commandMap->register("MPEPerms", new ListGPerms(self::getPlugin(), "listgperms", self::getPlugin()->getMessage("cmds.listgperms.desc") ));
-		//$commandMap->register("MPEPerms", new ListUPerms(self::getPlugin(), "listuperms", self::getPlugin()->getMessage("cmds.listuperms.desc") ));
-		$commandMap->register("MPEPerms", new MPInfo(self::getPlugin(), "ppinfo", self::getPlugin()->getMessage("cmds.mpinfo.desc") ));
-		//$commandMap->register("MPEPerms", new MPReload(self::getPlugin(), "ppreload", self::getPlugin()->getMessage("cmds.mpreload.desc") ));
-		$commandMap->register("MPEPerms", new RmGroup(self::getPlugin(), "rmgroup", self::getPlugin()->getMessage("cmds.rmgroup.desc") ));
-		//$commandMap->register("MPEPerms", new RmParent(self::getPlugin(), "rmparent", self::getPlugin()->getMessage("cmds.rmparent.desc") ));
-		//$commandMap->register("MPEPerms", new SetGPerm(self::getPlugin(), "setgperm", self::getPlugin()->getMessage("cmds.setgperm.desc") ));
-		//$commandMap->register("MPEPerms", new SetGroup(self::getPlugin(), "setgroup", self::getPlugin()->getMessage("cmds.setgroup.desc") ));
-		//$commandMap->register("MPEPerms", new SetUPerm(self::getPlugin(), "setuperm", self::getPlugin()->getMessage("cmds.setuperm.desc") ));
-		//$commandMap->register("MPEPerms", new UnsetGPerm(self::getPlugin(), "unsetgperm", self::getPlugin()->getMessage("cmds.unsetgperm.desc") ));
-		//$commandMap->register("MPEPerms", new UnsetUPerm(self::getPlugin(), "unsetuperm", self::getPlugin()->getMessage("cmds.unsetuperm.desc") ));
-		//$commandMap->register("MPEPerms", new UsrInfo(self::getPlugin(), "usrinfo", self::getPlugin()->getMessage("cmds.usrinfo.desc") ));
+		$commandMap->register("MPEPerms", new AddGroup($this->plugin, "addgroup", $this->plugin->getMessage("cmds.addgroup.desc") ));
+		//$commandMap->register("MPEPerms", new AddParent($this->plugin, "addparent", $this->plugin->getMessage("cmds.addparent.desc") ));
+		$commandMap->register("MPEPerms", new DefGroup($this->plugin, "defgroup", $this->plugin->getMessage("cmds.defgroup.desc") ));
+		$commandMap->register("MPEPerms", new FPerms($this->plugin, "fperms", $this->plugin->getMessage("cmds.fperms.desc") ));
+		$commandMap->register("MPEPerms", new Groups($this->plugin, "groups", $this->plugin->getMessage("cmds.groups.desc") ));
+		//$commandMap->register("MPEPerms", new GrpInfo($this->plugin, "grpinfo", $this->plugin->getMessage("cmds.grpinfo.desc") ));
+		//$commandMap->register("MPEPerms", new ListGPerms($this->plugin, "listgperms", $this->plugin->getMessage("cmds.listgperms.desc") ));
+		//$commandMap->register("MPEPerms", new ListUPerms($this->plugin, "listuperms", $this->plugin->getMessage("cmds.listuperms.desc") ));
+		$commandMap->register("MPEPerms", new MPInfo($this->plugin, "ppinfo", $this->plugin->getMessage("cmds.mpinfo.desc") ));
+		//$commandMap->register("MPEPerms", new MPReload($this->plugin, "ppreload", $this->plugin->getMessage("cmds.mpreload.desc") ));
+		$commandMap->register("MPEPerms", new RmGroup($this->plugin, "rmgroup", $this->plugin->getMessage("cmds.rmgroup.desc") ));
+		//$commandMap->register("MPEPerms", new RmParent($this->plugin, "rmparent", $this->plugin->getMessage("cmds.rmparent.desc") ));
+		//$commandMap->register("MPEPerms", new SetGPerm($this->plugin, "setgperm", $this->plugin->getMessage("cmds.setgperm.desc") ));
+		$commandMap->register("MPEPerms", new SetGroup($this->plugin, "setgroup", $this->plugin->getMessage("cmds.setgroup.desc") ));
+		//$commandMap->register("MPEPerms", new SetUPerm($this->plugin, "setuperm", $this->plugin->getMessage("cmds.setuperm.desc") ));
+		//$commandMap->register("MPEPerms", new UnsetGPerm($this->plugin, "unsetgperm", $this->plugin->getMessage("cmds.unsetgperm.desc") ));
+		//$commandMap->register("MPEPerms", new UnsetUPerm($this->plugin, "unsetuperm", $this->plugin->getMessage("cmds.unsetuperm.desc") ));
+		//$commandMap->register("MPEPerms", new UsrInfo($this->plugin, "usrinfo", $this->plugin->getMessage("cmds.usrinfo.desc") ));
 	}
 }

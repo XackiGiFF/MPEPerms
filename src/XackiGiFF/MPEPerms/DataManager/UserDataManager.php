@@ -2,9 +2,9 @@
 
 namespace XackiGiFF\MPEPerms\DataManager;
 
-use XackiGiFF\MPEPerms\PPGroup;
+use XackiGiFF\MPEPerms\MPGroup;
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\EventManager\PPGroupChangedEvent;
+use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
 
 use pocketmine\player\IPlayer;
 
@@ -48,7 +48,7 @@ class UserDataManager
     /**
      * @param IPlayer $player
      * @param null $WorldName
-     * @return PPGroup|null
+     * @return MPGroup|null
      */
     public function getGroup(IPlayer $player, $WorldName = null)
     {
@@ -135,11 +135,11 @@ class UserDataManager
 
     /**
      * @param IPlayer $player
-     * @param PPGroup $group
+     * @param MPGroup $group
      * @param $WorldName
      * @param int $time
      */
-    public function setGroup(IPlayer $player, PPGroup $group, $WorldName, $time = -1)
+    public function setGroup(IPlayer $player, MPGroup $group, $WorldName, $time = -1)
     {
         if($WorldName === null)
         {
@@ -154,7 +154,7 @@ class UserDataManager
             $this->setWorldData($player, $WorldName, $worldData);
         }
 
-        $event = new PPGroupChangedEvent($this->plugin, $player, $group, $WorldName);
+        $event = new MPGroupChangedEvent($this->plugin, $player, $group, $WorldName);
 
         $event->call();
     }

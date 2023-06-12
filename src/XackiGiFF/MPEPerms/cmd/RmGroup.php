@@ -35,8 +35,8 @@ class RmGroup extends BaseCommand
             $this->registerArgument(0, new RawStringArgument(RmGroup::ARGUMENT_GROUP_NAME));
         } catch (Exception) {
         }
-		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.usage"));
-		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.usage"));
+		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.example"));
+		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.example"));
 	}
 
 	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
@@ -55,10 +55,5 @@ class RmGroup extends BaseCommand
 		}
 
 		return;
-    }
-    
-    public function getPlugin() : Plugin
-    {
-        return $this->getOwningPlugin();
     }
 }
