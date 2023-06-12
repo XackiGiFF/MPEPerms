@@ -7,8 +7,6 @@ namespace XackiGiFF\MPEPerms\api;
 use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\api\CommandsRegisterAPI;
 
-use pocketmine\utils\TextFormat;
-
 class MPEPermsAPI {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
@@ -39,13 +37,16 @@ class MPEPermsAPI {
         CommandsRegisterAPI::registerCommands();
     }
 
-    public function getTemplate(string $template, bool $type = true, array $data = []): string {
-		($type) ? $format = TextFormat::GREEN : $format = TextFormat::RED;
-		return $format . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage($template, $data);
+    public function getTemplate(string $template, $data): string {
+		return MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage($template, $data);
 	}
 
-	public function sendTemplate($sender, string $template, bool $type = true, array $data = []): void {
-		$sender->sendMessage($this->getTemplate($template, $type = true, $data));
+	public function sendTemplate($sender, string $template, $data): void {
+		$sender->sendMessage($this->getTemplate($template, $data));
+	}
+	
+	public function getFormat($type) : string {
+		return ($type) ? $format = TextFormat::GREEN : $format = TextFormat::RED;
 	}
 
 }

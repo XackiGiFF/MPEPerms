@@ -45,28 +45,23 @@ class PPMessages extends MPEPermsAPI
         $this->langList = $result;
     }
 
-    /**
-     * @param $node
-     * @param array ...$vars
-     * @return mixed|null
-     */
-    public function getMessage($node, ...$vars)
-    {
-        $msg = $this->messages->getNested($node);
-        if($msg != null)
-        {
-            $number = 0;
-            
-            foreach($vars as $v)
-            {
-                var_dump($v);
-                $msg = str_replace("%var$number%", $v, $msg);
-                $number++;
-            }
-            return $msg;
-        }
-        return null;
-    }
+	public function getMessage($node, array $vars = []): string|null{
+		$msg = $this->messages->getNested($node);
+
+		if($msg != null){
+			$number = 0;
+
+			foreach($vars as $v){
+				$msg = str_replace("%var$number%", $v, $msg);
+
+				$number++;
+			}
+
+			return $msg;
+		}
+
+		return null;
+	}
 
     /**
      * @return mixed

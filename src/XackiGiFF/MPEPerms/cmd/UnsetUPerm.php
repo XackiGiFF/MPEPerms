@@ -6,9 +6,11 @@ use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
 use CortexPE\Commando\BaseCommand;
+
 use CortexPE\Commando\args\RawStringArgument;
 
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
 
 class UnSetUPerm extends BaseCommand
 {
@@ -30,44 +32,38 @@ class UnSetUPerm extends BaseCommand
 
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		// This is where the processing will occur if it's NOT handled by other subcommands
         if(!$this->testPermission($sender))
             return false;
         if(count($args) < 2 || count($args) > 3)
         {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.unsetuperm.usage"));
+            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.unsetuperm.usage"));
             return true;
         }
         
-        $player = $this->plugin->getPlayer($args[0]);
+        $player = $this->getOwningPlugin()->getPlayer($args[0]);
         $permission = $args[1];
         $WorldName = null;
         
         if(isset($args[2]))
         {
-            $world = $this->plugin->getServer()->getWorldManager()->getWorldByName($args[2]);
+            $world = $this->getOwningPlugin()->getServer()->getWorldManager()->getWorldByName($args[2]);
             if($world === null)
             {
-                $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.unsetgperm.messages.level_not_exist", $args[2]));
+                $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.unsetgperm.messages.level_not_exist", $args[2]));
                 return true;
             }
 
             $WorldName = $world->getDisplayName();
         }
-        $this->plugin->getUserDataMgr()->unsetPermission($player, $permission, $WorldName);
-        $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.unsetuperm.messages.uperm_removed_successfully", $permission, $player->getName()));
+        $this->getOwningPlugin()->getUserDataMgr()->unsetPermission($player, $permission, $WorldName);
+        $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.unsetuperm.messages.uperm_removed_successfully", $permission, $player->getName()));
         return true;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

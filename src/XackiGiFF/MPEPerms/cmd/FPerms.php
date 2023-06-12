@@ -6,10 +6,15 @@ use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
 use CortexPE\Commando\BaseCommand;
+
 use CortexPE\Commando\args\IntegerArgument;
 use CortexPE\Commando\args\RawStringArgument;
 
 use pocketmine\command\CommandSender;
+use pocketmine\console\ConsoleCommandSender;
+use pocketmine\plugin\Plugin;
+use pocketmine\plugin\PluginBase;
+use pocketmine\utils\TextFormat;
 
 class FPerms extends BaseCommand
 {
@@ -36,68 +41,73 @@ class FPerms extends BaseCommand
             $this->registerArgument(1, new IntegerArgument(FPerms::ARGUMENT_PAGE, true));
         } catch (Exception) {
         }
-		$this->setErrorFormat(0x01, TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
-		$this->setErrorFormat(0x02, TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
-		$this->setErrorFormat(0x03, TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
+		$this->setErrorFormat(0x01, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
+		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
+		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.usage"));
 
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
-        if(!$this->testPermission($sender))
-            return false;
-        if(!isset($args[0]) || count($args) > 2)
-        {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.plperms.usage"));
-            return true;
-        }
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		// This is where the processing will occur if it's NOT handled by other subcommands
+		if(!$this->testPermission($sender)){
+			return;
+		}
         
-        $plugin = (strtolower($args[0]) === 'pocketmine' || strtolower($args[0]) === 'pmmp') ? 'pocketmine' : $this->plugin->getServer()->getPluginManager()->getPlugin($args[0]);
+        $plugin = (strtolower($args["plugin_name"]) === 'pocketmine' || strtolower($args["plugin_name"]) === 'pmmp') ? 'pocketmine' : $this->getOwningPlugin()->getServer()->getPluginManager()->getPlugin($args["plugin_name"]);
+        
         if($plugin === null)
         {
-            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.plperms.messages.plugin_not_exist", $args[0]));
-            return true;
+            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.messages.plugin_not_exist", [$args["plugin_name"]]));
+            
+            return;
         }
         
-        $permissions = ($plugin instanceof PluginBase) ? $plugin->getDescription()->getPermissions() : $this->plugin->getPocketMinePerms();
+        $permissions = ($plugin instanceof PluginBase) ? $plugin->getDescription()->getPermissions() : $this->getOwningPlugin()->getPocketMinePerms();
+        
         if(empty($permissions))
         {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.plperms.messages.no_plugin_perms", $plugin->getName()));
-            return true;
+            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.messages.no_plugin_perms", [$plugin->getName()]));
+            
+            return;
         }
         
         $pageHeight = $sender instanceof ConsoleCommandSender ? 48 : 6;
-        $chunkedPermissions = array_chunk($permissions, $pageHeight);
+                
+        $chunkedPermissions = array_chunk($permissions, $pageHeight); 
+        
         $maxPageNumber = count($chunkedPermissions);
-        if(!isset($args[1]) || !is_numeric($args[1]) || $args[1] <= 0) 
+        
+        if(!isset($args["page"]) || !is_numeric($args["page"]) || $args["page"] <= 0) 
         {
             $pageNumber = 1;
         }
-        else if($args[1] > $maxPageNumber)
+        else if($args["page"] > $maxPageNumber)
         {
             $pageNumber = $maxPageNumber;   
         }
         else 
         {
-            $pageNumber = $args[1];
+            $pageNumber = $args["page"];
         }
         
-        $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.plperms.messages.plugin_perms_list", ($plugin instanceof PluginBase) ? $plugin->getName(): 'PocketMine-MP', $pageNumber, $maxPageNumber));
-        foreach($chunkedPermissions[$pageNumber - 1] as $permission)
+        $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.fperms.messages.plugin_perms_list", [($plugin instanceof PluginBase) ? $plugin->getName(): 'PocketMine-MP', $pageNumber, $maxPageNumber]));
+
+        foreach($chunkedPermissions[$pageNumber - 1] as $page) 
         {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' - ' . $permission->getName());
+		$i = 0; 
+		foreach($page as $permission){
+			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' - ' . $permission->getName() . " - " . $permission->getDescription());
+			$i++;
+		}
+		$i = 0; 
+
         }
-        return true;
+        
+        return;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

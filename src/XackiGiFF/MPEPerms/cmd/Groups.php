@@ -8,6 +8,7 @@ use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 use CortexPE\Commando\BaseCommand;
 
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
 
 class Groups extends BaseCommand
 {
@@ -29,28 +30,23 @@ class Groups extends BaseCommand
 		
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
-        if(!$this->testPermission($sender))
-            return false;
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		if(!$this->testPermission($sender)){
+			return;
+		}
+		$result = [];
 
-        $result = [];
-        foreach($this->plugin->getGroups() as $group)
-        {
-            $result[] = $group->getName();
-        }
-        $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.groups.messages.all_registered_groups", implode(", ", $result)));
-        return true;
+		foreach($this->getOwningPlugin()->getGroups() as $group){
+			$result[] = $group->getName();
+		}
+
+		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.groups.messages.all_registered_groups", [implode(", ", $result)]));
+
+		return;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

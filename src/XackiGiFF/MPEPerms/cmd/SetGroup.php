@@ -6,9 +6,11 @@ use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
 use CortexPE\Commando\BaseCommand;
+
 use CortexPE\Commando\args\RawStringArgument;
 
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
 
 class SetGroup extends BaseCommand
 {
@@ -30,85 +32,84 @@ class SetGroup extends BaseCommand
 
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
-        if(!$this->testPermission($sender))
-        {
-            return false;
-        }
-        
-        if(count($args) < 2 || count($args) > 4)
-        {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.usage"));
-            return true;
-        }
-        $player = $this->plugin->getPlayer($args[0]);
-        $group = $this->plugin->getGroup($args[1]);
-        if($group === null)
-        {
-            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.group_not_exist", $args[1]));
-            return true;
-        }
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		if(!$this->testPermission($sender)){
+			return;
+		}
 
-        $expTime = -1;
-        if(isset($args[2]))
-            $expTime = $this->plugin->date2Int($args[2]);
-        $WorldName = null;
-        if(isset($args[3]))
-        {
-            $world = $this->plugin->getServer()->getWorldManager()->getWorldByName($args[3]);
-            if($world === null)
-            {
-                $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.level_not_exist", $args[3]));
-                return true;
-            }
+		if(count($args) < 2 || count($args) > 4){
+			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.usage"));
 
-            $WorldName = $world->getDisplayName();
-        }
+			return;
+		}
 
-        $superAdmingroups = $this->plugin->getConfigValue("superadmin-groups");
-        foreach(array_values($superAdmingroups) as $value)
-        {
-            $tmpSuperAdmingroups[$value] = 1;
-        }
+		$player = $this->getOwningPlugin()->getPlayer($args[0]);
 
-        if(!($sender instanceof ConsoleCommandSender))
-        {
-            if(isset($tmpSuperAdmingroups[$group->getName()]))
-            {
-                $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.access_denied_01", $group->getName()));
-                return true;
-            }
+		$group = $this->getOwningPlugin()->getGroup($args[1]);
 
-            $userGroup = $this->plugin->getUserDataMgr()->getGroup($player, $WorldName);
-            if(isset($tmpSuperAdmingroups[$userGroup->getName()]))
-            {
-                $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.access_denied_02", $userGroup->getName()));
-                return true;
-            }
-        }
+		if($group === null){
+			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.group_not_exist", [$args[1]]));
 
-        $this->plugin->getUserDataMgr()->setGroup($player, $group, $WorldName, $expTime);
-        
-        $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.setgroup_successfully", $player->getName()));
-        
-        if($player instanceof Player)
-        {
-            if(!$this->plugin->getConfigValue("enable-multiworld-perms") || ($this->plugin->getConfigValue("enable-multiworld-perms") and $WorldName === $player->getWorld()->getDisplayName()))
-                $player->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.setgroup.messages.on_player_group_change", strtolower($group->getName())));
-        }
+			return;
+		}
 
-        return true;
+		if(isset($args[2])) {
+			$expTime = $this->getOwningPlugin()->date2Int($args[2]);
+			$sender->sendMessage("Время окончания: " .$expTime. ".");
+		} else {
+		    $expTime = -1;
+		    $sender->sendMessage("не указано время. Бессрочно.");
+		}
+		$levelName = null;
+
+		if(isset($args[3])){
+			$level = $this->getOwningPlugin()->getServer()->getLevelByName($args[3]);
+
+			if($level === null){
+				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.level_not_exist", [$args[3]]));
+
+				return;
+			}
+
+			$levelName = $level->getName();
+		}
+
+		$superAdminRanks = $this->getOwningPlugin()->getConfigValue("superadmin-ranks");
+
+		foreach(array_values($superAdminRanks) as $value){
+			$tmpSuperAdminRanks[$value] = 1;
+		}
+
+		if(!($sender instanceof ConsoleCommandSender)){
+			if(isset($tmpSuperAdminRanks[$group->getName()])){
+				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.access_denied_01", [$group->getName()]));
+
+				return;
+			}
+
+			$userGroup = $this->getOwningPlugin()->getUserDataMgr()->getGroup($player, $levelName);
+
+			if(isset($tmpSuperAdminRanks[$userGroup->getName()])){
+				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.access_denied_02", [$userGroup->getName()]));
+
+				return;
+			}
+		}
+
+		$this->getOwningPlugin()->getUserDataMgr()->setGroup($player, $group, $levelName, $expTime);
+
+		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.setgroup_successfully", [$player->getName()]));
+
+		if($player instanceof Player){
+			if(!$this->getOwningPlugin()->getConfigValue("enable-multiworld-perms") || ($this->getOwningPlugin()->getConfigValue("enable-multiworld-perms") and $levelName === $player->getWorld()->getFolderName()))
+				$player->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.on_player_group_change", [strtolower($group->getName())]));
+		}
+
+		return;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

@@ -6,9 +6,11 @@ use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
 use CortexPE\Commando\BaseCommand;
+
 use CortexPE\Commando\args\RawStringArgument;
 
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
 
 class DefGroup extends BaseCommand
 {
@@ -35,55 +37,50 @@ class DefGroup extends BaseCommand
             $this->registerArgument(1, new RawStringArgument(DefGroup::ARGUMENT_WORLD_NAME, true));
         } catch (Exception) {
         }
-		$this->setErrorFormat(0x01, $this->getOwningPlugin()->getAPI()->getTemplate("cmds.defgroup.usage", true));
-		$this->setErrorFormat(0x02, $this->getOwningPlugin()->getAPI()->getTemplate("cmds.defgroup.usage", true));
-		$this->setErrorFormat(0x03, $this->getOwningPlugin()->getAPI()->getTemplate("cmds.defgroup.usage", true));
+		$this->setErrorFormat(0x01, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
+		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
+		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.defgroup.usage"));
 
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
-        if(!$this->testPermission($sender))
-            return false;
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		if(!$this->testPermission($sender)){
+			return;
+		}
 
-        if(!isset($args["group_name"]) || count($args) > 2)
-        {
-            $this->getOwningPlugin()->getAPI()->sendTemplate("cmds.defgroup.usage");
-            return true;
-        }
+		$group_name = $this->getOwningPlugin()->getGroup($args["group_name"]);
+		$world_name = (isset($args[1])) ? $args["world_name"] : null;
 
-        $group = $this->plugin->getGroup($args["group_name"]);
-        if($group === null)
-        {
-            $this->getOwningPlugin()->getAPI()->sendTemplate("cmds.defgroup.messages.group_not_exist", false, $args["group_name"]);
-            return true;
-        }
-        $WorldName = null;
-        if(isset($args["world_name"]))
-        {
-            $World = $this->plugin->getServer()->getWorldManager()->getWorldByName($args["world_name"]);
-            if($World === null)
-            {
-                $this->getOwningPlugin()->getAPI()->sendTemplate("cmds.defgroup.messages.level_not_exist", false, $args["world_name"]);
-                return true;
-            }
 
-            $WorldName = $World->getDisplayName();
-        }
-        $this->plugin->setDefaultGroup($group, $WorldName);
-        $this->getOwningPlugin()->getAPI()->sendTemplate("cmds.defgroup.messages.defgroup_successfully", true, $args["group_name"]);
-        
-        return true;
+		if($group_name === null){
+			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.defgroup.messages.group_not_exist", [$args["group_name"]]));
+
+			return;
+		}
+
+		$levelName = null;
+
+		if(isset($world_name)){
+			$level = $this->getOwningPlugin()->getServer()->getWorldManager()->getWorldByName($world_name);
+
+			if($level === null){
+				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.defgroup.messages.level_not_exist", [$args["world_name"]]));
+
+				return;
+			}
+
+			$levelName = $level->getFolderName();
+		}
+
+		$this->getOwningPlugin()->setDefaultGroup($group_name, $levelName);
+
+		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.defgroup.messages.defgroup_successfully", [$args["group_name"]]));
+
+		return;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

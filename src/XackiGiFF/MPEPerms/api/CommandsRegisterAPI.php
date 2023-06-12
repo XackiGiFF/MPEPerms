@@ -45,15 +45,15 @@ final class CommandsRegisterAPI extends MPEPermsAPI
 		
 		$commandMap->register("MPEPerms", new AddGroup(self::getPlugin(), "addgroup", self::getPlugin()->getMessage("cmds.addgroup.desc") ));
 		//$commandMap->register("MPEPerms", new AddParent(self::getPlugin(), "addparent", self::getPlugin()->getMessage("cmds.addparent.desc") ));
-		//$commandMap->register("MPEPerms", new DefGroup(self::getPlugin(), "defgroup", self::getPlugin()->getMessage("cmds.defgroup.desc") ));
-		//$commandMap->register("MPEPerms", new FPerms(self::getPlugin(), "fperms", self::getPlugin()->getMessage("cmds.fperms.desc") ));
-		//$commandMap->register("MPEPerms", new Groups(self::getPlugin(), "groups", self::getPlugin()->getMessage("cmds.groups.desc") ));
+		$commandMap->register("MPEPerms", new DefGroup(self::getPlugin(), "defgroup", self::getPlugin()->getMessage("cmds.defgroup.desc") ));
+		$commandMap->register("MPEPerms", new FPerms(self::getPlugin(), "fperms", self::getPlugin()->getMessage("cmds.fperms.desc") ));
+		$commandMap->register("MPEPerms", new Groups(self::getPlugin(), "groups", self::getPlugin()->getMessage("cmds.groups.desc") ));
 		//$commandMap->register("MPEPerms", new GrpInfo(self::getPlugin(), "grpinfo", self::getPlugin()->getMessage("cmds.grpinfo.desc") ));
 		//$commandMap->register("MPEPerms", new ListGPerms(self::getPlugin(), "listgperms", self::getPlugin()->getMessage("cmds.listgperms.desc") ));
 		//$commandMap->register("MPEPerms", new ListUPerms(self::getPlugin(), "listuperms", self::getPlugin()->getMessage("cmds.listuperms.desc") ));
-		//$commandMap->register("MPEPerms", new MPInfo(self::getPlugin(), "ppinfo", self::getPlugin()->getMessage("cmds.mpinfo.desc") ));
+		$commandMap->register("MPEPerms", new MPInfo(self::getPlugin(), "ppinfo", self::getPlugin()->getMessage("cmds.mpinfo.desc") ));
 		//$commandMap->register("MPEPerms", new MPReload(self::getPlugin(), "ppreload", self::getPlugin()->getMessage("cmds.mpreload.desc") ));
-		//$commandMap->register("MPEPerms", new RmGroup(self::getPlugin(), "rmgroup", self::getPlugin()->getMessage("cmds.rmgroup.desc") ));
+		$commandMap->register("MPEPerms", new RmGroup(self::getPlugin(), "rmgroup", self::getPlugin()->getMessage("cmds.rmgroup.desc") ));
 		//$commandMap->register("MPEPerms", new RmParent(self::getPlugin(), "rmparent", self::getPlugin()->getMessage("cmds.rmparent.desc") ));
 		//$commandMap->register("MPEPerms", new SetGPerm(self::getPlugin(), "setgperm", self::getPlugin()->getMessage("cmds.setgperm.desc") ));
 		//$commandMap->register("MPEPerms", new SetGroup(self::getPlugin(), "setgroup", self::getPlugin()->getMessage("cmds.setgroup.desc") ));

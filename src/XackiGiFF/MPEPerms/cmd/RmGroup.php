@@ -6,9 +6,11 @@ use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
 
 use CortexPE\Commando\BaseCommand;
+
 use CortexPE\Commando\args\RawStringArgument;
 
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
 
 class RmGroup extends BaseCommand
 {
@@ -33,45 +35,30 @@ class RmGroup extends BaseCommand
             $this->registerArgument(0, new RawStringArgument(RmGroup::ARGUMENT_GROUP_NAME));
         } catch (Exception) {
         }
-		$this->setErrorFormat(0x02, $this->getTemplate("cmds.rmgroup.usage", true) );
-		$this->setErrorFormat(0x03, $this->getTemplate("cmds.rmgroup.usage", true) );
+		$this->setErrorFormat(0x02, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.usage"));
+		$this->setErrorFormat(0x03, TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.usage"));
 	}
 
-    /**
-     * @param CommandSender $sender
-     * @param $label
-     * @param array $args
-     * @return bool
-     */
-    public function execute(CommandSender $sender, string $label, array $args) : bool
-    {
-        if(!$this->testPermission($sender))
-            return false;
-        if(!isset($args[0]) || count($args) > 1)
-        {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.rmgroup.usage"));
-            return true;
-        }
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+		if(!$this->testPermission($sender)){
+			return;
+		}
 
-        $result = $this->plugin->removeGroup($args[0]);
-        if($result === MPEPerms::SUCCESS)
-        {
-            $sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.rmgroup.messages.groups_removed_successfully", $args[0]));
-        }
-        elseif($result === MPEPerms::INVALID_NAME)
-        {
-            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.rmgroup.messages.invalid_groups_name", $args[0]));
-        }
-        else
-        {
-            $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->plugin->getMessage("cmds.rmgroup.messages.groups_not_exist", $args[0]));
-        }
-        
-        return true;
+		$result = $this->getOwningPlugin()->removeGroup($args["group"]);
+
+		if($result === MPEPerms::SUCCESS){
+			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.group_removed_successfully", [$args["group"]]));
+		}elseif($result === MPEPerms::INVALID_NAME){
+			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.invalid_group_name", [$args["group"]]));
+		}else{
+			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.group_not_exist", [$args["group"]]));
+		}
+
+		return;
     }
     
     public function getPlugin() : Plugin
     {
-        return $this->plugin;
+        return $this->getOwningPlugin();
     }
 }

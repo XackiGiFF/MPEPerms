@@ -113,7 +113,7 @@ class MPEPerms extends PluginBase
             default:
                 $provider = new DefaultProvider($this);
                 if($onEnable === true)
-                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", "'$providerName'"));
+                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
                 break;
         }
         if($provider instanceof ProviderInterface)
@@ -287,9 +287,9 @@ class MPEPerms extends PluginBase
         return $this->groups;
     }
 
-    public function getMessage($node, ...$vars)
+    public function getMessage($node, array $vars = [])
     {
-        return $this->messages->getMessage($node, ...$vars);
+        return $this->messages->getMessage($node, $vars);
     }
 
 
