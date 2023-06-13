@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace XackiGiFF\MPEPerms\api;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\api\CommandsRegisterAPI;
+
 
 class MPEPermsAPI {
 	/*
@@ -18,45 +18,74 @@ class MPEPermsAPI {
 		║║║║║║║║───║╚══╗     ║║───║╚══╗║║║╚╗║║║║║║║╚═╝║
 		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
 	*/
-	private $cmds;
 
+	private $manager;
     public function __construct(protected MPEPerms $plugin) {
-		$this->cmds = new CommandsRegisterAPI($this->plugin);
+		$this->manager = new LoaderManagerAPI($this->plugin);
+    }
+
+//
+// Start System Service
+//
+
+	public function startService(): void{
+		$this->manager->startService();
+	}
+
+	public function registerCommands(): void{
+		$this->manager->getCommandsRegisterAPI()->registerCommands();
     }
 
 	public function getPlugin() {
         return $this->plugin;
     }
 
-    public function registerCommands(): void {
-		$this->cmds->registerCommands();
+//
+// CommandsAPI
+//
+
+	public function getCommands(): array{
+			return $this->manager->getCommandsRegisterAPI()->getCommands();
     }
 
-	public function getCommands(){  // TODO
-			return array (
-				"addgroup" => 
-					array("class" => "AddGroup",
-						  "desc" => "cmds.addgroup.desc"),
-				"defgroup" => 
-					array("class" => "DefGroup",
-						  "desc" => "cmds.defgroup.desc"),
-				"fperms" => 
-					array("class" => "FPerms",
-						  "desc" => "cmds.fperms.desc"),
-				"groups" => 
-					array("class" => "Groups",
-						  "desc" => "cmds.groups.desc"),
-				"ppinfo" => 
-					array("class" => "MPInfo",
-						  "desc" => "cmds.ppinfo.desc"),
-				"rmgroup" => 
-					array("class" => "RmGroup",
-						  "desc" => "cmds.rmgroup.desc"),
-				"setgroup" => 
-					array("class" => "SetGroup",
-						  "desc" => "cmds.setgroup.desc"),
-			);
-    }
+//
+// GroupsAPI
+//
+
+	public function addGroup($groupName) {
+		return $this->manager->getGroupManagerAPI()->addGroup($groupName);
+	}
+
+	public function removeGroup($groupName) {
+		return $this->manager->getGroupManagerAPI()->removeGroup($groupName);
+	}
+
+	public function isValidGroupName(){
+		return $this->manager->getGroupManagerAPI()->isValidGroupName();
+	}
+
+	public function updateGroups(){
+		return $this->manager->getGroupManagerAPI()->updateGroups();
+	}
+
+	public function sortGroupData(){
+		return $this->manager->getGroupManagerAPI()->sortGroupData();
+	}
+
+	public function getGroups(){
+		return $this->manager->getGroupManagerAPI()->getGroups();
+	}
+
+//
+// UtilsAPI
+//
+	public function getUtils() {
+		return $this->manager->getUtilsAPI();
+	}
+
+//
+// Configs & Providers
+//
 
 	public function fixConfig(): void{
 		$config = $this->getPlugin()->getConfig();

@@ -11,7 +11,6 @@ use XackiGiFF\MPEPerms\DataProviders\MySQLProvider;
 use XackiGiFF\MPEPerms\DataProviders\YamlV1Provider;
 use XackiGiFF\MPEPerms\DataProviders\ProviderInterface;
 use XackiGiFF\MPEPerms\DataProviders\JsonProvider;
-use XackiGiFF\MPEPerms\Task\MPExpDateCheckTask;
 
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
@@ -40,13 +39,6 @@ class MPEPerms extends PluginBase
     const MAIN_PREFIX = "§b§lMP §r§7>>";
 
     const CORE_PERM = "\x70\x70\x65\x72\x6d\x73\x2e\x63\x6f\x6d\x6d\x61\x6e\x64\x2e\x70\x70\x69\x6e\x66\x6f";
-
-    const NOT_FOUND = null;
-    const INVALID_NAME = -1;
-    const ALREADY_EXISTS = 0;
-    const SUCCESS = 1;
-
-    private $isGroupsLoaded = false;
 
     /** @var PPMessages $messages */
     private $messages;
@@ -83,11 +75,10 @@ class MPEPerms extends PluginBase
     
     public function onEnable(): void
     {
-        $this->api->registerCommands();
         $this->setProvider();
         $this->registerPlayers();
-        $this->getServer()->getPluginManager()->registerEvents(new PPListener($this), $this);
-        $this->getScheduler()->scheduleRepeatingTask(new MPExpDateCheckTask($this), 20);
+        $this->api->registerCommands();
+        $this->api->startService();
     }
 
     public function onDisable(): void
@@ -142,54 +133,43 @@ class MPEPerms extends PluginBase
           888  888   d88P     888 888       8888888
     */
 
-    public function getAPI(): MPEPermsAPI {
+    public function getAPI(): MPEPermsAPI{
 		return $this->api;
 	}
 
-    /**
-     * @param $groupName
-     * @return bool
-     */
-    public function addGroup($groupName)
-    {
-        $groupsData = $this->getProvider()->getGroupsData();
-        if(!$this->isValidGroupName($groupName))
-            return self::INVALID_NAME;
-        if(isset($groupsData[$groupName]))
-            return self::ALREADY_EXISTS;
-        $groupsData[$groupName] = [
-            "alias" => "",
-            "isDefault" => false,
-            "inheritance" => [
-            ],
-            "permissions" => [
-            ],
-            "worlds" => [
-            ]
-        ];
-        $this->getProvider()->setGroupsData($groupsData);
-        $this->updateGroups();
-        return self::SUCCESS;
+    public function addGroup($groupName) {
+        return $this->getAPI()->addGroup($groupName);
+    }
+    
+    public function getGroups(){
+        return $this->getAPI()->getGroups();
     }
 
-    /**
-     * @param $date
-     * @return int
-     * Example: $date = '1d2h3m';
-     */
-    public function date2Int($date)
-    {
-        if(preg_match("/([0-9]+)d([0-9]+)h([0-9]+)m/", $date, $result_array) and count($result_array) === 4)
-            return time() + ($result_array[1] * 86400) + ($result_array[2] * 3600) + ($result_array[3] * 60);
-        return -1;
+    public function isValidGroupName($groupName){
+        return $this->getAPI()->isValidGroupName($groupName);
+    }
+
+    public function removeGroup($groupName) {
+        return $this->getAPI()->removeGroup($groupName);
+    }
+
+    public function date2Int($date): int{
+        return $this->getAPI()->getUtils()->date2Int($date);
+    }
+
+    public function sortGroupData(): bool{
+        return $this->getAPI()->sortGroupData($groupName);
+    }
+
+    public function updateGroups(){
+        return $this->getAPI()->updateGroups();
     }
 
     /**
      * @param $key
      * @return null
      */
-    public function getConfigValue($key)
-    {
+    public function getConfigValue($key) {
         $value = $this->getConfig()->getNested($key);
         if($value === null)
         {
@@ -205,8 +185,7 @@ class MPEPerms extends PluginBase
      * @param null $WorldName
      * @return MPGroup|null
      */
-    public function getDefaultGroup($WorldName = null)
-    {
+    public function getDefaultGroup($WorldName = null) {
         $defaultGroups = [];
         foreach($this->getGroups() as $defaultGroup)
         {
@@ -249,8 +228,7 @@ class MPEPerms extends PluginBase
      * @param $groupName
      * @return MPGroup|null
      */
-    public function getGroup($groupName)
-    {
+    public function getGroup($groupName) {
         if(!isset($this->groups[$groupName]))
         {
             /** @var MPGroup $group */
@@ -274,19 +252,8 @@ class MPEPerms extends PluginBase
 
         return $group;
     }
-
-    /**
-     * @return MPGroup[]
-     */
-    public function getGroups()
-    {
-        if($this->isGroupsLoaded !== true)
-            throw new RuntimeException("No groups loaded, maybe a provider error?");
-        return $this->groups;
-    }
-
-    public function getMessage($node, array $vars = [])
-    {
+    
+    public function getMessage($node, array $vars = []) {
         return $this->messages->getMessage($node, $vars);
     }
 
@@ -295,8 +262,7 @@ class MPEPerms extends PluginBase
      * @param MPGroup $group
      * @return array
      */
-    public function getOnlinePlayersInGroup(MPGroup $group)
-    {
+    public function getOnlinePlayersInGroup(MPGroup $group) {
         $users = [];
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
@@ -316,8 +282,7 @@ class MPEPerms extends PluginBase
      * @param $WorldName
      * @return array
      */
-    public function getPermissions(IPlayer $player, $WorldName)
-    {
+    public function getPermissions(IPlayer $player, $WorldName) {
         // TODO: Fix this
         $group = $this->userDataMgr->getGroup($player, $WorldName);
         $groupPerms = $group->getGroupPermissions($WorldName);
@@ -330,8 +295,7 @@ class MPEPerms extends PluginBase
      * @param $userName
      * @return Player
      */
-    public function getPlayer($userName)
-    {
+    public function getPlayer($userName) {
         $player = $this->getServer()->getPlayerByPrefix($userName);
         return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
     }
@@ -339,24 +303,21 @@ class MPEPerms extends PluginBase
     /**
      * @return array
      */
-    public function getPocketMinePerms() : array
-    {
+    public function getPocketMinePerms() : array {
         return array_keys(PermissionManager::getInstance()->getPermissions());
     }
 
     /**
      * @return string
      */
-    public function getPPVersion()
-    {
+    public function getPPVersion() {
         return $this->getDescription()->getVersion();
     }
 
     /**
      * @return ProviderInterface
      */
-    public function getProvider()
-    {
+    public function getProvider() {
         if(!$this->isValidProvider())
             $this->setProvider(false);
 
@@ -366,8 +327,7 @@ class MPEPerms extends PluginBase
     /**
      * @return UserDataManager
      */
-    public function getUserDataMgr()
-    {
+    public function getUserDataMgr() {
         return $this->userDataMgr;
     }
 
@@ -375,35 +335,24 @@ class MPEPerms extends PluginBase
      * @param Player $player
      * @return null|string
      */
-    public function getValidUUID(Player $player) : string
-    {
+    public function getValidUUID(Player $player) : string {
 		return $player->getUniqueId()->toString();
-    }
-
-    /**
-     * @param $groupName
-     * @return int
-     */
-    public function isValidGroupName($groupName)
-    {
-        return preg_match('/[0-9a-zA-Z\xA1-\xFE]$/', $groupName);
     }
 
     /**
      * @return bool
      */
-    public function isValidProvider()
-    {
+    public function isValidProvider() {
         if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
             return false;
         return true;
     }
 
+
     /**
      * @param Player $player
      */
-    public function registerPlayer(Player $player)
-    {
+    public function registerPlayer(Player $player) {
         $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
         if(!isset($this->attachments[$uniqueId]))
@@ -414,29 +363,11 @@ class MPEPerms extends PluginBase
         }
     }
 
-    public function registerPlayers()
-    {
+    public function registerPlayers() {
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
             $this->registerPlayer($player);
         }
-    }
-
-    /**
-     * @param $groupName
-     * @return bool
-     */
-    public function removeGroup($groupName)
-    {
-        if(!$this->isValidGroupName($groupName))
-            return self::INVALID_NAME;
-        $groupsData = $this->getProvider()->getGroupsData();
-        if(!isset($groupsData[$groupName]))
-            return self::NOT_FOUND;
-        unset($groupsData[$groupName]);
-        $this->getProvider()->setGroupsData($groupsData);
-        $this->updateGroups();
-        return self::SUCCESS;
     }
 
     /**
@@ -467,51 +398,15 @@ class MPEPerms extends PluginBase
      * @param null $WorldName
      * @param int $time
      */
-    public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1)
-    {
+    public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
         $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
-    }
-
-    public function sortGroupData()
-    {
-        foreach($this->getGroups() as $groupName => $mpGroup)
-        {
-            $mpGroup->sortPermissions();
-
-            if($this->getConfigValue("enable-multiworld-perms"))
-            {
-                /** @var World $World */
-                foreach($this->getServer()->getWorldManager()->getWorlds() as $World)
-                {
-                    $WorldName = $World->getDisplayName();
-                    $mpGroup->createWorldData($WorldName);
-                }
-            }
-        }
-    }
-
-    public function updateGroups()
-    {
-        if(!$this->isValidProvider())
-            throw new RuntimeException("Failed to load groups: Invalid data provider");
-        // Make group list empty first to reload it
-        $this->groups = [];
-        foreach(array_keys($this->getProvider()->getGroupsData()) as $groupName)
-        {
-            $this->groups[$groupName] = new MPGroup($this, $groupName);
-        }
-        if(empty($this->groups))
-            throw new RuntimeException("No groups found, I guess there's definitely something wrong with your data provider... *cough cough*");
-        $this->isGroupsLoaded = true;
-        $this->sortGroupData();
     }
 
     /**
      * @param IPlayer $player
      * @param string|null $WorldName
      */
-    public function updatePermissions(IPlayer $player, string $WorldName = null)
-    {
+    public function updatePermissions(IPlayer $player, string $WorldName = null) {
         if($player instanceof Player)
         {
             if($this->getConfigValue("enable-multiworld-perms") == null) {
@@ -525,10 +420,7 @@ class MPEPerms extends PluginBase
             {
                 if($permission === '*')
                 {
-                    foreach(PermissionManager::getInstance()->getPermissions() as $tmp)
-                    {
-                        $permissions[$tmp->getName()] = true;
-                    }
+                    $player->addAttachment($this, DefaultPermissions::ROOT_OPERATOR, true);
                 }
                 else
                 {
@@ -554,8 +446,7 @@ class MPEPerms extends PluginBase
     /**
      * @param MPGroup $group
      */
-    public function updatePlayersInGroup(MPGroup $group)
-    {
+    public function updatePlayersInGroup(MPGroup $group) {
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
             if($this->userDataMgr->getGroup($player) === $group)
@@ -566,8 +457,7 @@ class MPEPerms extends PluginBase
     /**
      * @param Player $player
      */
-    public function unregisterPlayer(Player $player)
-    {
+    public function unregisterPlayer(Player $player) {
         $this->getLogger()->debug($this->getMessage("logger_messages.unregisterPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
 		if(isset($this->attachments[$uniqueId]))
@@ -575,8 +465,7 @@ class MPEPerms extends PluginBase
 		unset($this->attachments[$uniqueId]);
     }
 
-    public function unregisterPlayers()
-    {
+    public function unregisterPlayers() {
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
             $this->unregisterPlayer($player);

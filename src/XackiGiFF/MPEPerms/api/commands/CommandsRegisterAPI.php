@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XackiGiFF\MPEPerms\api;
+namespace XackiGiFF\MPEPerms\api\commands;
 
 use XackiGiFF\MPEPerms\cmd\AddGroup;
 use XackiGiFF\MPEPerms\cmd\AddParent;
@@ -24,23 +24,50 @@ use XackiGiFF\MPEPerms\cmd\UnsetGPerm;
 use XackiGiFF\MPEPerms\cmd\UnsetUPerm;
 use XackiGiFF\MPEPerms\cmd\UsrInfo;
 
-use XackiGiFF\MPEPerms\api\MPEPermsAPI;
-
 use XackiGiFF\MPEPerms\MPEPerms;
 
-final class CommandsRegisterAPI extends MPEPermsAPI
+final class CommandsRegisterAPI
 {
     public function __construct(protected MPEPerms $plugin){
+	}
+	private $c_namespace = '\\XackiGiFF\\MPEPerms\\cmd\\';
+	public function getCommands(): array {
+		return array (
+			"addgroup" => 
+				array("class" => 'AddGroup',
+					   "desc" => "cmds.addgroup.desc"),
+			"defgroup" => 
+				array("class" => 'DefGroup',
+					   "desc" => "cmds.defgroup.desc"),
+			"fperms" => 
+				array("class" => 'FPerms',
+					   "desc" => "cmds.fperms.desc"),
+			"groups" => 
+				array("class" => 'Groups',
+					   "desc" => "cmds.groups.desc"),
+			"ppinfo" => 
+				array("class" => 'MPInfo',
+					   "desc" => "cmds.mpinfo.desc"),
+			"rmgroup" => 
+				array("class" => 'RmGroup',
+					   "desc" => "cmds.rmgroup.desc"),
+			"setgroup" => 
+				array("class" => 'SetGroup',
+					   "desc" => "cmds.setgroup.desc"),
+		);
 	}
 
     public function registerCommands(): void{
 
 		$commandMap = $this->plugin->getServer()->getCommandMap();
 
+		foreach($this->getCommands() as $command => $keys){
+			$commandMap->register("MPEPerms", new ($this->c_namespace . $keys['class']) ($this->plugin, $command, $this->plugin->getMessage($keys['desc']) ) );
 		//if($this->plugin->getNoeulAPI()->isNoeulEnabled())
-			//$commandMap->register("MPEPerms", new MPSudo($this, "ppsudo", $this->plugin->getMessage("cmds.mpsudo.desc") ));
-			// Лучше не включайте это, если не знаете, как пофикстить полное удаление всех прав у игрока после выхода из аккаунта.
-		
+		//	$commandMap->register("MPEPerms", new MPSudo($this, "ppsudo", $this->plugin->getMessage("cmds.mpsudo.desc") ));
+		}
+
+		/* WTF?!
 		$commandMap->register("MPEPerms", new AddGroup($this->plugin, "addgroup", $this->plugin->getMessage("cmds.addgroup.desc") ));
 		//$commandMap->register("MPEPerms", new AddParent($this->plugin, "addparent", $this->plugin->getMessage("cmds.addparent.desc") ));
 		$commandMap->register("MPEPerms", new DefGroup($this->plugin, "defgroup", $this->plugin->getMessage("cmds.defgroup.desc") ));
@@ -59,5 +86,6 @@ final class CommandsRegisterAPI extends MPEPermsAPI
 		//$commandMap->register("MPEPerms", new UnsetGPerm($this->plugin, "unsetgperm", $this->plugin->getMessage("cmds.unsetgperm.desc") ));
 		//$commandMap->register("MPEPerms", new UnsetUPerm($this->plugin, "unsetuperm", $this->plugin->getMessage("cmds.unsetuperm.desc") ));
 		//$commandMap->register("MPEPerms", new UsrInfo($this->plugin, "usrinfo", $this->plugin->getMessage("cmds.usrinfo.desc") ));
+		*/
 	}
 }

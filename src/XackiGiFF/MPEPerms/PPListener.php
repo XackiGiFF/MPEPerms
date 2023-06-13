@@ -56,27 +56,26 @@ class PPListener implements Listener
             $this->plugin->updatePermissions($player, $event->getTo()->getWorld()->getDisplayName());
         }
     }
- /*
+
     public function onPlayerCommand(CommandEvent $event)
     {
         $message = $event->getCommand();
 		$player = $event->getSender();
+        // TODO проверка на команды и на то, включен ли NoeulAPI
+
+        /*
         if(!$player instanceof Player) return;
 
-        if(str_starts_with($message, "/")){
-            $command = substr($message, 1);
-            $args = explode(" ", $command);
-
-			if(!$this->plugin->getNoeulAPI()->isAuthed($player)){
+			if(!$this->plugin->getAPI()->getNoeulAPI()->isAuthed($player)){
 				$event->cancel();
 
 				if($args[0] === "ppsudo" or $args[0] === "help"){
 					$this->plugin->getServer()->dispatchCommand($player, $command);
 				}else{
-					$this->plugin->getNoeulAPI()->sendAuthMsg($player);
+					$this->plugin->getAPI()->getNoeulAPI()->sendAuthMsg($player);
 				}
 			}else{
-				$disableOp = $this->plugin->getConfigValue("disable-op");
+				$disableOp = $this->plugin->getAPI()->getConfigValue("disable-op");
 
 				if($disableOp and $args[0] === "op"){
 					$event->cancel();
@@ -84,9 +83,8 @@ class PPListener implements Listener
                     $player->sendMessage(new Translatable(TextFormat::RED . "%commands.generic.permission"));
 				}
 			}
-        }
+        */
     }
-    */
 
     /**
      * @param PlayerLoginEvent $event
