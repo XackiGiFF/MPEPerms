@@ -29,7 +29,6 @@ class PPMySQLTask extends Task
      */
     public function __construct(MPEPerms $plugin, \mysqli $db)
     {
-        parent::__construct($plugin);
         $this->db = $db;
     }
 

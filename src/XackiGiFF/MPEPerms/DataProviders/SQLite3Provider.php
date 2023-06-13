@@ -20,7 +20,7 @@ class SQLite3Provider implements ProviderInterface
       888  888    "Y8888P"        888  888        888        "Y8888P"   "Y8888P"
 */
 
-    private $db, $plugin;
+    private $db;
     private $groupsData = [];
 
     /**

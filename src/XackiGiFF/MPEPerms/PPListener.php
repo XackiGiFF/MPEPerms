@@ -111,7 +111,7 @@ class PPListener implements Listener
      * @param MPgroupExpiredEvent $event
      * @priority LOWEST
      */
-    public function ongroupExpired(MPgroupExpiredEvent $event)
+    public function ongroupExpired(MPGroupExpiredEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->setGroup($player, $this->plugin->getDefaultGroup());

@@ -8,14 +8,17 @@ use XackiGiFF\MPEPerms\DataManager\UserDataManager;
 use XackiGiFF\MPEPerms\DataProviders\SQLite3Provider;
 use XackiGiFF\MPEPerms\DataProviders\DefaultProvider;
 use XackiGiFF\MPEPerms\DataProviders\MySQLProvider;
+use XackiGiFF\MPEPerms\DataProviders\YamlV1Provider;
 use XackiGiFF\MPEPerms\DataProviders\ProviderInterface;
 use XackiGiFF\MPEPerms\DataProviders\JsonProvider;
-use XackiGiFF\MPEPerms\Task\PPExpDateCheckTask;
+use XackiGiFF\MPEPerms\Task\MPExpDateCheckTask;
 
+use pocketmine\permission\DefaultPermissions;
+use pocketmine\permission\Permission;
+use pocketmine\permission\PermissionAttachment;
 use pocketmine\permission\PermissionManager;
 use pocketmine\player\IPlayer;
 use pocketmine\world\World;
-use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use Ramsey\Uuid\Uuid;
@@ -84,7 +87,7 @@ class MPEPerms extends PluginBase
         $this->setProvider();
         $this->registerPlayers();
         $this->getServer()->getPluginManager()->registerEvents(new PPListener($this), $this);
-        $this->getScheduler()->scheduleRepeatingTask(new PPExpDateCheckTask($this), 72000);
+        $this->getScheduler()->scheduleRepeatingTask(new MPExpDateCheckTask($this), 20);
     }
 
     public function onDisable(): void
@@ -111,6 +114,11 @@ class MPEPerms extends PluginBase
                 $provider = new JsonProvider($this);
                 if($onEnable === true)
                     $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_JSON"));
+                break;
+            case "yamlv1":
+                $provider = new YamlV1Provider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_YAML"));
                 break;
             default:
                 $provider = new DefaultProvider($this);
@@ -174,18 +182,6 @@ class MPEPerms extends PluginBase
         if(preg_match("/([0-9]+)d([0-9]+)h([0-9]+)m/", $date, $result_array) and count($result_array) === 4)
             return time() + ($result_array[1] * 86400) + ($result_array[2] * 3600) + ($result_array[3] * 60);
         return -1;
-    }
-
-    /**
-     * @param Player $player
-     * @return null|\pocketmine\permission\PermissionAttachment
-     */
-    public function getAttachment(Player $player)
-    {
-        $uniqueId = $this->getValidUUID($player);
-        if(!isset($this->attachments[$uniqueId]))
-            throw new RuntimeException("Tried to calculate permissions on " .  $player->getName() . " using null attachment");
-        return $this->attachments[$uniqueId];
     }
 
     /**
@@ -545,10 +541,13 @@ class MPEPerms extends PluginBase
             }
 
             $permissions[self::CORE_PERM] = true;
+            /* This need run asynk Task */
             /** @var \pocketmine\permission\PermissionAttachment $attachment */
-            $attachment = $this->getAttachment($player);
+            $attachment = $player->addAttachment($this->getServer()->getPluginManager()->getPlugin('MPEPerms'));
             $attachment->clearPermissions();
-            $attachment->setPermissions($permissions);
+            $attachment->setPermissions($permissions); //Tnx you, https://vk.com/stefanfox_dev
+            var_dump($attachment->getPermissions());
+            /* End */
         }
     }
 

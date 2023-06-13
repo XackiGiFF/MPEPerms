@@ -7,7 +7,7 @@ use XackiGiFF\MPEPerms\MPEPerms;
 
 use pocketmine\scheduler\Task;
 
-class PPExpDateCheckTask extends Task
+class MPExpDateCheckTask extends Task
 {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
@@ -32,8 +32,11 @@ class PPExpDateCheckTask extends Task
         foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
         {
             $exptime = $this->plugin->getUserDataMgr()->getNode($player, "expTime");
+            // TODO проверку на миры
+
             if(time() > $exptime && $exptime !== -1)
             {
+                echo("Время вышло");
                 $WorldName = $this->plugin->getConfigValue("enable-multiworld-perms") ? $player->getWorld()->getDisplayName() : null;
                 $event = new MPgroupExpiredEvent($this->plugin, $player, $WorldName);
                 $event->call();

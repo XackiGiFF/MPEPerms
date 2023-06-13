@@ -28,11 +28,11 @@ final class YamlV1Provider implements ProviderInterface
 
 	public function __construct(protected MPEPerms $plugin){
 
-		$this->getPlugin()->saveResource("groups.yml");
+		$this->plugin->saveResource("groups.yml");
 
-		$this->groups = new Config($this->getPlugin()->getDataFolder() . "groups.yml", Config::YAML, []);
+		$this->groups = new Config($this->plugin->getDataFolder() . "groups.yml", Config::YAML, []);
 
-		$this->userDataFolder = $this->getPlugin()->getDataFolder() . "players/";
+		$this->userDataFolder = $this->plugin->getDataFolder() . "players/";
 
 		if(!file_exists($this->userDataFolder))
 			@mkdir($this->userDataFolder, 0777, true);
@@ -80,7 +80,7 @@ final class YamlV1Provider implements ProviderInterface
 			if(!file_exists($this->userDataFolder . strtolower($userName) . ".yml")){
 				return new Config($this->userDataFolder . strtolower($userName) . ".yml", Config::YAML, [
 					"userName" => $userName,
-					"group" => $this->getPlugin()->getDefaultGroup()->getName(),
+					"group" => $this->plugin->getDefaultGroup()->getName(),
 					"permissions" => [],
 					"worlds" => [],
 					"time" => -1
@@ -96,7 +96,7 @@ final class YamlV1Provider implements ProviderInterface
 			}else{
 				return [
 					"userName" => $userName,
-					"group" => $this->getPlugin()->getDefaultGroup()->getName(),
+					"group" => $this->plugin->getDefaultGroup()->getName(),
 					"permissions" => [],
 					"worlds" => [],
 					"time" => -1

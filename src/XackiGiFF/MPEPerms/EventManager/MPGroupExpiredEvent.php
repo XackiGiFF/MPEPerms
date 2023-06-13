@@ -33,7 +33,6 @@ class MPGroupExpiredEvent extends PluginEvent
      */
     public function __construct(protected MPEPerms $plugin, protected IPlayer $player, protected ?string $worldName)
     {
-        parent::__construct($plugin);
     }
 
     /**
@@ -41,7 +40,7 @@ class MPGroupExpiredEvent extends PluginEvent
      */
     public function getWorld()
     {
-        return $this->getPlugin()->getServer()->getLevelByName($this->worldName);
+        return $this->plugin->getServer()->getLevelByName($this->worldName);
     }
 
     /**

@@ -33,7 +33,6 @@ class MPGroupChangedEvent extends PluginEvent
      */
     public function __construct(protected MPEPerms $plugin, protected IPlayer $player, protected MPGroup $group, protected ?string $worldName)
     {
-        parent::__construct($plugin);
     }
 
 	/**
@@ -49,7 +48,7 @@ class MPGroupChangedEvent extends PluginEvent
      */
     public function getLevel()
     {
-        return $this->getPlugin()->getServer()->getWorldManager()->getWorldByName($this->worldName);
+        return $this->plugin->getServer()->getWorldManager()->getWorldByName($this->worldName);
     }
 
     /**
