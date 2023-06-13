@@ -56,7 +56,7 @@ class PPListener implements Listener
             $this->plugin->updatePermissions($player, $event->getTo()->getWorld()->getDisplayName());
         }
     }
-
+ /*
     public function onPlayerCommand(CommandEvent $event)
     {
         $message = $event->getCommand();
@@ -86,6 +86,7 @@ class PPListener implements Listener
 			}
         }
     }
+    */
 
     /**
      * @param PlayerLoginEvent $event
