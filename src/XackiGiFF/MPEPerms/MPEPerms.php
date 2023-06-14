@@ -5,7 +5,7 @@ namespace XackiGiFF\MPEPerms;
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 use XackiGiFF\MPEPerms\MPGroup;
 
-use XackiGiFF\MPEPerms\DataManager\UserDataManager;
+use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
 
 use XackiGiFF\MPEPerms\DataProviders\SQLite3Provider;
 use XackiGiFF\MPEPerms\DataProviders\DefaultProvider;
@@ -64,7 +64,6 @@ class MPEPerms extends PluginBase {
         $this->api->fixConfig();
         
         $this->messages = new PPMessages($this);
-        $this->userDataMgr = new UserDataManager($this);
 
         if($this->getConfigValue("enable-multiworld-perms") === false){
 			$this->getLogger()->notice($this->getMessage("logger_messages.onLoad_01"));
@@ -98,9 +97,26 @@ class MPEPerms extends PluginBase {
           888  888   d88P     888 888       8888888
     */
 
+
+//
+// UtilsAPI
+//
+
     public function getAPI(): MPEPermsAPI{
-		return $this->api;
-	}
+        return $this->api;
+    }
+
+    public function getPPVersion(): string{
+        return $this->getDescription()->getVersion();
+    }
+
+    public function getUserDataMgr(): UserDataManagerAPI{
+        return $this->getAPI()->getUserDataMgr();
+    }
+
+    public function date2Int($date): int{
+        return $this->getAPI()->getUtils()->date2Int($date);
+    }
 
 //
 // GroupsAPI
@@ -110,90 +126,20 @@ class MPEPerms extends PluginBase {
         return $this->getAPI()->addGroup($groupName);
     }
 
-// TODO
     public function getDefaultGroup($WorldName = null): MPGroup|null{
-        $defaultGroups = [];
-        foreach($this->getGroups() as $defaultGroup)
-        {
-            if($defaultGroup->isDefault($WorldName))
-                $defaultGroups[] = $defaultGroup;
-        }
-
-        if(count($defaultGroups) === 1)
-        {
-            return $defaultGroups[0];
-        }
-        else
-        {
-            if(count($defaultGroups) > 1)
-            {
-                $this->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_01"));
-            }
-            elseif(count($defaultGroups) <= 0)
-            {
-                $this->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_02"));
-            }
-
-            $this->getLogger()->info($this->getMessage("logger_messages.getDefaultGroup_03"));
-
-            foreach($this->getGroups() as $tempGroup)
-            {
-                if(count($tempGroup->getParentGroups()) === 0)
-                {
-                    $this->setDefaultGroup($tempGroup, $WorldName);
-
-                    return $tempGroup;
-                }
-            }
-        }
-
-        return null;
+        return $this->getAPI()->getDefaultGroup($WorldName = null);
     }
 
-// TODO
     public function getGroup($groupName): MPGroup|null{
-        if(!isset($this->groups[$groupName]))
-        {
-            /** @var MPGroup $group */
-            foreach($this->groups as $group)
-            {
-                if($group->getAlias() === $groupName)
-                    return $group;
-            }
-            $this->getLogger()->debug($this->getMessage("logger_messages.getGroup_01", [$groupName]));
-            return null;
-        }
-
-        /** @var MPGroup $group */
-        $group = $this->groups[$groupName];
-
-        if(empty($group->getData()))
-        {
-            $this->getLogger()->warning($this->getMessage("logger_messages.getGroup_02", [$groupName]));
-            return null;
-        }
-
-        return $group;
+        return $this->getAPI()->getGroup($groupName);
     }
 
     public function getGroups(): array{
         return $this->getAPI()->getGroups();
     }
 
-// TODO
     public function getOnlinePlayersInGroup(MPGroup $group): array{
-        $users = [];
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            foreach($this->getServer()->getWorldManager()->getWorlds() as $World)
-            {
-                $WorldName = $World->getDisplayName();
-                if($this->userDataMgr->getGroup($player, $WorldName) === $group)
-                    $users[] = $player;
-            }
-        }
-
-        return $users;
+        return $this->getAPI()->getOnlinePlayersInGroup($group);
     }
 
     public function isValidGroupName($groupName): int|false{
@@ -207,56 +153,27 @@ class MPEPerms extends PluginBase {
     public function sortGroupData(): void{
         $this->getAPI()->sortGroupData($groupName);
     }
-// TODO
-	public function setDefaultGroup(MPGroup $group, $levelName = null){
-		foreach($this->getGroups() as $currentGroup){
-			if($levelName === null){
-				$isDefault = $currentGroup->getNode("isDefault");
 
-				if($isDefault)
-					$currentGroup->removeNode("isDefault");
-			}else{
-				$isDefault = $currentGroup->getWorldNode($levelName, "isDefault");
+    public function setDefaultGroup(MPGroup $group, $levelName = null): void{
+        $this->getAPI()->sortGroupData($group, $levelName = null);
+    }
 
-				if($isDefault)
-					$currentGroup->removeWorldNode($levelName, "isDefault");
-			}
-		}
-
-		$group->setDefault($levelName);
-	}
-
-// TODO
     public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
-        $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
+        $this->getAPI()->setGroup($player, $group, $WorldName, $time);
     }
 
     public function updateGroups(): void{
         $this->getAPI()->updateGroups();
     }
-// TODO
-    public function updatePlayersInGroup(MPGroup $group) {
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            if($this->userDataMgr->getGroup($player) === $group)
-                $this->updatePermissions($player);
-        }
+
+    public function updatePlayersInGroup(MPGroup $group): void{
+        $this->getAPI()->updatePlayersInGroup();
     }
 
-//
-// UtilsAPI
-//
-
-    public function date2Int($date): int{
-        return $this->getAPI()->getUtils()->date2Int($date);
-    }
-
-    public function getPPVersion(): string{
-        return $this->getDescription()->getVersion();
-    }
+    /* End Block Group? Need MORE!!! */
 
 // Config?
-    public function getConfigValue($key): string|null{
+    public function getConfigValue($key){
         $value = $this->getConfig()->getNested($key);
         if($value === null)
         {
@@ -274,79 +191,29 @@ class MPEPerms extends PluginBase {
     }
 
 // Players & Permissions
+// TODO
     public function getPermissions(IPlayer $player, $WorldName): array{
         // TODO: Fix this
-        $group = $this->userDataMgr->getGroup($player, $WorldName);
+        $group = $this->getUserDataMgr()->getGroup($player, $WorldName);
         $groupPerms = $group->getGroupPermissions($WorldName);
-        $userPerms = $this->userDataMgr->getUserPermissions($player, $WorldName);
+        $userPerms = $this->getUserDataMgr()->getUserPermissions($player, $WorldName);
 
         return array_merge($groupPerms, $userPerms);
     }
-
-    public function getPlayer($userName): Player{
+// TODO
+    public function getPlayer($userName): Player|IPlayer{
         $player = $this->getServer()->getPlayerByPrefix($userName);
         return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
     }
-
+// TODO
     public function getPocketMinePerms() : array {
         return array_keys(PermissionManager::getInstance()->getPermissions());
     }
-
-
-// Provider
-    public function getProvider(): ProviderInterface{
-        if(!$this->isValidProvider())
-            $this->setProvider(false);
-
-        return $this->provider;
-    }
-// Provider
-    public function isValidProvider(): bool{
-        if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
-            return false;
-        return true;
-    }
-//Provider
-    private function setProvider($onEnable = true) {
-        $providerName = $this->getConfigValue("data-provider");
-        switch(strtolower($providerName))
-        {
-            case "sqlite3":
-                $provider = new SQLite3Provider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_SQLITE3"));
-                break;
-            case "json":
-                $provider = new JsonProvider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_JSON"));
-                break;
-            case "yamlv1":
-                $provider = new YamlV1Provider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_YAML"));
-                break;
-            default:
-                $provider = new DefaultProvider($this);
-                if($onEnable === true)
-                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
-                break;
-        }
-        if($provider instanceof ProviderInterface)
-            $this->provider = $provider;
-        $this->updateGroups();
-    }
-
-// For API
-    public function getUserDataMgr(): UserDataManager{
-        return $this->userDataMgr;
-    }
-
-// Players & Permissions
+// TODO
     public function getValidUUID(Player $player) : null|string{
-		return $player->getUniqueId()->toString();
+        return $player->getUniqueId()->toString();
     }
-
+// TODO
     public function registerPlayer(Player $player) {
         $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
@@ -357,7 +224,7 @@ class MPEPerms extends PluginBase {
             $this->updatePermissions($player);
         }
     }
-
+// TODO
     public function registerPlayers() {
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
@@ -365,7 +232,8 @@ class MPEPerms extends PluginBase {
         }
     }
 
-    public function updatePermissions(IPlayer $player, string $WorldName = null): string|null{
+// TODO | Fixed
+    public function updatePermissions(IPlayer $player, string $WorldName = null): void{
         if($player instanceof Player)
         {
             if($this->getConfigValue("enable-multiworld-perms") == null) {
@@ -401,19 +269,67 @@ class MPEPerms extends PluginBase {
             /* End */
         }
     }
-
+// TODO
     public function unregisterPlayer(Player $player) {
         $this->getLogger()->debug($this->getMessage("logger_messages.unregisterPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
-		if(isset($this->attachments[$uniqueId]))
-			$player->removeAttachment($this->attachments[$uniqueId]);
-		unset($this->attachments[$uniqueId]);
+        if(isset($this->attachments[$uniqueId]))
+            $player->removeAttachment($this->attachments[$uniqueId]);
+        unset($this->attachments[$uniqueId]);
+    }
+// TODO
+public function unregisterPlayers() {
+    foreach($this->getServer()->getOnlinePlayers() as $player)
+    {
+        $this->unregisterPlayer($player);
+    }
+}
+
+// Provider
+// TODO
+    public function isValidProvider(): bool{
+        if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
+            return false;
+        return true;
     }
 
-    public function unregisterPlayers() {
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            $this->unregisterPlayer($player);
-        }
+// TODO
+    public function getProvider(): ProviderInterface{
+        if(!$this->isValidProvider())
+            $this->setProvider(false);
+
+        return $this->provider;
     }
+
+// TODO
+    private function setProvider($onEnable = true) {
+        $providerName = $this->getConfigValue("data-provider");
+        switch(strtolower($providerName))
+        {
+            case "sqlite3":
+                $provider = new SQLite3Provider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_SQLITE3"));
+                break;
+            case "json":
+                $provider = new JsonProvider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_JSON"));
+                break;
+            case "yamlv1":
+                $provider = new YamlV1Provider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_YAML"));
+                break;
+            default:
+                $provider = new DefaultProvider($this);
+                if($onEnable === true)
+                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
+                break;
+        }
+        if($provider instanceof ProviderInterface)
+            $this->provider = $provider;
+        $this->updateGroups();
+    }
+
 }

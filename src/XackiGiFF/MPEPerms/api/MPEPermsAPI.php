@@ -6,6 +6,7 @@ namespace XackiGiFF\MPEPerms\api;
 
 use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
 
 
 class MPEPermsAPI {
@@ -57,8 +58,20 @@ class MPEPermsAPI {
 		return $this->manager->getGroupManagerAPI()->addGroup($groupName);
 	}
 
+	public function getDefaultGroup($WorldName = null): MPGroup|null{
+		return $this->manager->getGroupManagerAPI()->getDefaultGroup();
+	}
+
+	public function getGroup($groupName): MPGroup|null{
+		return $this->manager->getGroupManagerAPI()->getGroup($groupName);
+	}
+
 	public function getGroups(): array{
 		return $this->manager->getGroupManagerAPI()->getGroups();
+	}
+
+	public function getOnlinePlayersInGroup(MPGroup $group): array{
+		return $this->manager->getGroupManagerAPI()->getOnlinePlayersInGroup($group);
 	}
 
 	public function isValidGroupName(): int|false{
@@ -73,8 +86,20 @@ class MPEPermsAPI {
 		$this->manager->getGroupManagerAPI()->sortGroupData();
 	}
 
+	public function setDefaultGroup(MPGroup $group, $levelName = null): void{
+		$this->manager->getGroupManagerAPI()->sortGroupData($group, $levelName = null);
+	}
+
+	public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1){
+		$this->manager->getGroupManagerAPI()->setGroup($player, $group, $WorldName, $time);
+	}
+
 	public function updateGroups(): void{
 		$this->manager->getGroupManagerAPI()->updateGroups();
+	}
+	
+	public function updatePlayersInGroup(MPGroup $group): void{
+		$this->manager->getGroupManagerAPI()->updatePlayersInGroup($group);
 	}
 
 //
@@ -84,7 +109,9 @@ class MPEPermsAPI {
 	public function getUtils() {
 		return $this->manager->getUtilsAPI();
 	}
-
+	public function getUserDataMgr(): UserDataManagerAPI{
+        return $this->manager->getUserDataMgr();
+    }
 //
 // Configs & Providers
 //

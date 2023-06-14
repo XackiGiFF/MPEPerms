@@ -2,7 +2,7 @@
 
 name: MPEPerms
 main: XackiGiFF\MPEPerms\MPEPerms
-version: 1.0.3-dev
+version: 1.0.4-dev
 api: [ 5.0.0 ]
 load: POSTWORLD
 author: "64FF00 & ProjectInfinity | Remake to API 5.0.0 by XackiGiFF"

@@ -27,6 +27,7 @@ class GroupsManagerAPI {
 
     private $isGroupsLoaded = false;
     private $groups;
+    private $userDataMgr;
 
     public function __construct(protected MPEPerms $plugin){
 	}
@@ -52,10 +53,89 @@ class GroupsManagerAPI {
         return self::SUCCESS;
     }
 
+    public function getDefaultGroup($WorldName = null): MPGroup|null{
+        $defaultGroups = [];
+        foreach($this->getGroups() as $defaultGroup)
+        {
+            if($defaultGroup->isDefault($WorldName))
+                $defaultGroups[] = $defaultGroup;
+        }
+
+        if(count($defaultGroups) === 1)
+        {
+            return $defaultGroups[0];
+        }
+        else
+        {
+            if(count($defaultGroups) > 1)
+            {
+                $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_01"));
+            }
+            elseif(count($defaultGroups) <= 0)
+            {
+                $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_02"));
+            }
+
+            $this->plugin->getLogger()->info($this->getMessage("logger_messages.getDefaultGroup_03"));
+
+            foreach($this->getGroups() as $tempGroup)
+            {
+                if(count($tempGroup->getParentGroups()) === 0)
+                {
+                    $this->setDefaultGroup($tempGroup, $WorldName);
+
+                    return $tempGroup;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function getGroup($groupName): MPGroup|null{
+        if(!isset($this->groups[$groupName]))
+        {
+            /** @var MPGroup $group */
+            foreach($this->groups as $group)
+            {
+                if($group->getAlias() === $groupName)
+                    return $group;
+            }
+            $this->plugin->getLogger()->debug($this->getMessage("logger_messages.getGroup_01", [$groupName]));
+            return null;
+        }
+
+        /** @var MPGroup $group */
+        $group = $this->groups[$groupName];
+
+        if(empty($group->getData()))
+        {
+            $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getGroup_02", [$groupName]));
+            return null;
+        }
+
+        return $group;
+    }
+
     public function getGroups(): array{
             if($this->isGroupsLoaded !== true)
                 throw new RuntimeException("No groups loaded, maybe a provider error?");
             return $this->groups;
+    }
+
+    public function getOnlinePlayersInGroup(MPGroup $group): array{
+        $users = [];
+        foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
+        {
+            foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World)
+            {
+                $WorldName = $World->getDisplayName();
+                if($this->plugin->userDataMgr->getGroup($player, $WorldName) === $group)
+                    $users[] = $player;
+            }
+        }
+
+        return $users;
     }
 
     private function isValidGroupName($groupName): int|false{
@@ -88,6 +168,28 @@ class GroupsManagerAPI {
         }
     }
 
+	public function setDefaultGroup(MPGroup $group, $levelName = null): void{
+		foreach($this->getGroups() as $currentGroup){
+			if($levelName === null){
+				$isDefault = $currentGroup->getNode("isDefault");
+
+				if($isDefault)
+					$currentGroup->removeNode("isDefault");
+			}else{
+				$isDefault = $currentGroup->getWorldNode($levelName, "isDefault");
+
+				if($isDefault)
+					$currentGroup->removeWorldNode($levelName, "isDefault");
+			}
+		}
+
+		$group->setDefault($levelName);
+	}
+
+    public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
+        $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
+    }
+
     public function updateGroups(): void{
         if(!$this->plugin->isValidProvider())
             throw new RuntimeException("Failed to load groups: Invalid data provider");
@@ -103,8 +205,13 @@ class GroupsManagerAPI {
         $this->sortGroupData();
     }
 
-
-
+    public function updatePlayersInGroup(MPGroup $group): void{
+        foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
+        {
+            if($this->plugin->getUserDataMgr()->getGroup($player) === $group)
+                $this->plugin->updatePermissions($player);
+        }
+    }
 
 
 }

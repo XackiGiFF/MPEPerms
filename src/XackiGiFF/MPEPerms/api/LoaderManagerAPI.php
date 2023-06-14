@@ -10,6 +10,7 @@ use XackiGiFF\MPEPerms\Task\MPExpDateCheckTask;
 use XackiGiFF\MPEPerms\api\commands\CommandsRegisterAPI;
 use XackiGiFF\MPEPerms\utils\Utils as UtilsAPI;
 use XackiGiFF\MPEPerms\api\GroupsManagerAPI;
+use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
 
 
 class LoaderManagerAPI {
@@ -27,11 +28,13 @@ class LoaderManagerAPI {
     private $cmds;
     private $utils;
     private $group;
+    private $userDataMgr;
 
     public function __construct(protected MPEPerms $plugin) {
 		$this->loadCommandsRegisterAPI();
         $this->loadUtilsAPI();
         $this->loadGroupManagerAPI();
+        $this->loadUserDataManagerAPI();
     }
 
 //
@@ -50,6 +53,10 @@ class LoaderManagerAPI {
         $this->utils = new UtilsAPI($this->plugin);
     }
 
+    private function loadUserDataManagerAPI(){
+        $this->userDataMgr = new UserDataManagerAPI($this->plugin);
+    }
+
 //
 // GETTING...
 //
@@ -65,6 +72,11 @@ class LoaderManagerAPI {
     public function getUtilsAPI() {
         return $this->utils;
     }
+
+    public function getUserDataMgr(): UserDataManagerAPI{
+        return $this->userDataMgr;
+    }
+
     
 //
 // STARTING

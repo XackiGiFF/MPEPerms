@@ -1,6 +1,6 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\DataManager;
+namespace XackiGiFF\MPEPerms\api\player;
 
 use XackiGiFF\MPEPerms\MPGroup;
 use XackiGiFF\MPEPerms\MPEPerms;
@@ -8,7 +8,7 @@ use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
 
 use pocketmine\player\IPlayer;
 
-class UserDataManager {
+class UserDataManagerAPI {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
