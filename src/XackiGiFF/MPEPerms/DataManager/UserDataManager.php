@@ -8,8 +8,7 @@ use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
 
 use pocketmine\player\IPlayer;
 
-class UserDataManager
-{
+class UserDataManager {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

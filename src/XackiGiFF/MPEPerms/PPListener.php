@@ -13,8 +13,7 @@ use pocketmine\lang\Translatable;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class PPListener implements Listener
-{
+class PPListener implements Listener {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -57,8 +56,7 @@ class PPListener implements Listener
         }
     }
 
-    public function onPlayerCommand(CommandEvent $event)
-    {
+    public function onPlayerCommand(CommandEvent $event) {
         $message = $event->getCommand();
 		$player = $event->getSender();
         // TODO проверка на команды и на то, включен ли NoeulAPI

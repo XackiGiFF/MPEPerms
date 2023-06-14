@@ -26,12 +26,24 @@ use XackiGiFF\MPEPerms\cmd\UsrInfo;
 
 use XackiGiFF\MPEPerms\MPEPerms;
 
-final class CommandsRegisterAPI
-{
+final class CommandsRegisterAPI {
+	/*
+		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
+
+		╔═╗╔═╗╔═══╗╔═══╗     ╔═══╗╔═══╗╔═══╗╔═╗╔═╗╔═══╗
+		║║╚╝║║║╔═╗║║╔══╝     ║╔═╗║║╔══╝║╔═╗║║║╚╝║║║╔═╗║
+		║╔╗╔╗║║╚═╝║║╚══╗     ║╚═╝║║╚══╗║╚═╝║║╔╗╔╗║║╚══╗
+		║║║║║║║╔══╝║╔══╝     ║╔══╝║╔══╝║╔╗╔╝║║║║║║╚══╗║
+		║║║║║║║║───║╚══╗     ║║───║╚══╗║║║╚╗║║║║║║║╚═╝║
+		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
+	*/
+
     public function __construct(protected MPEPerms $plugin){
 	}
+
 	private $c_namespace = '\\XackiGiFF\\MPEPerms\\cmd\\';
-	public function getCommands(): array {
+
+	public function getCommands(): array{
 		return array (
 			"addgroup" => 
 				array("class" => 'AddGroup',
@@ -39,16 +51,16 @@ final class CommandsRegisterAPI
 			"defgroup" => 
 				array("class" => 'DefGroup',
 					   "desc" => "cmds.defgroup.desc"),
-			"fperms" => 
+			"fperms"   => 
 				array("class" => 'FPerms',
 					   "desc" => "cmds.fperms.desc"),
-			"groups" => 
+			"groups"   => 
 				array("class" => 'Groups',
 					   "desc" => "cmds.groups.desc"),
-			"ppinfo" => 
+			"ppinfo"   => 
 				array("class" => 'MPInfo',
 					   "desc" => "cmds.mpinfo.desc"),
-			"rmgroup" => 
+	  		"delgroup" => 
 				array("class" => 'RmGroup',
 					   "desc" => "cmds.rmgroup.desc"),
 			"setgroup" => 

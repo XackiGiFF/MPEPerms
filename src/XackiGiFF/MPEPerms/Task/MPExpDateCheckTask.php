@@ -7,8 +7,7 @@ use XackiGiFF\MPEPerms\MPEPerms;
 
 use pocketmine\scheduler\Task;
 
-class MPExpDateCheckTask extends Task
-{
+class MPExpDateCheckTask extends Task {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

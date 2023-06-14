@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 namespace XackiGiFF\MPEPerms\permissions;
 
-final class MPEPermsPermissions
-{
+final class MPEPermsPermissions {
+    /*
+		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
+
+		╔═╗╔═╗╔═══╗╔═══╗     ╔═══╗╔═══╗╔═══╗╔═╗╔═╗╔═══╗
+		║║╚╝║║║╔═╗║║╔══╝     ║╔═╗║║╔══╝║╔═╗║║║╚╝║║║╔═╗║
+		║╔╗╔╗║║╚═╝║║╚══╗     ║╚═╝║║╚══╗║╚═╝║║╔╗╔╗║║╚══╗
+		║║║║║║║╔══╝║╔══╝     ║╔══╝║╔══╝║╔╗╔╝║║║║║║╚══╗║
+		║║║║║║║║───║╚══╗     ║║───║╚══╗║║║╚╗║║║║║║║╚═╝║
+		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
+	*/
 
     public const COMMAND_ADDGROUP_PERMISSION = "mperms.command.addgroup";
     public const COMMAND_ADDPARENT_PERMISSION = "mperms.command.addgroup";

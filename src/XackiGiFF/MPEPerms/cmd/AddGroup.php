@@ -13,8 +13,7 @@ use CortexPE\Commando\args\RawStringArgument;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
-class AddGroup extends BaseCommand
-{
+class AddGroup extends BaseCommand {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

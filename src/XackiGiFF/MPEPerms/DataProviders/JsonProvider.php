@@ -10,8 +10,7 @@ use pocketmine\player\IPlayer;
 use pocketmine\utils\Config;
 use RuntimeException;
 
-class JsonProvider implements ProviderInterface
-{
+class JsonProvider implements ProviderInterface {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

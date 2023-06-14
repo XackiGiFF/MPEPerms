@@ -10,8 +10,7 @@ use pocketmine\event\plugin\PluginEvent;
 use pocketmine\player\IPlayer;
 use pocketmine\world\World;
 
-class MPGroupExpiredEvent extends PluginEvent
-{
+class MPGroupExpiredEvent extends PluginEvent {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

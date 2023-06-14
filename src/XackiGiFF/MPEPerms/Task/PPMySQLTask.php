@@ -6,8 +6,7 @@ use XackiGiFF\MPEPerms\MPEPerms;
 
 use pocketmine\scheduler\Task;
 
-class PPMySQLTask extends Task
-{
+class PPMySQLTask extends Task {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

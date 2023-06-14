@@ -6,8 +6,7 @@ use XackiGiFF\MPEPerms\MPGroup;
 
 use pocketmine\player\IPlayer;
 
-interface ProviderInterface
-{
+interface ProviderInterface {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

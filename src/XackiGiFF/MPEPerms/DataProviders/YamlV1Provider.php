@@ -11,8 +11,7 @@ use pocketmine\utils\Config;
 use RuntimeException;
 
 
-final class YamlV1Provider implements ProviderInterface
-{
+final class YamlV1Provider implements ProviderInterface {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from PurePerms by #64FF00)
 

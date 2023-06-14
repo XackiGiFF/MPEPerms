@@ -10,8 +10,7 @@ use CortexPE\Commando\BaseCommand;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
-class Groups extends BaseCommand
-{
+class Groups extends BaseCommand {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

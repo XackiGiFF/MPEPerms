@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace XackiGiFF\MPEPerms\api;
 
 use XackiGiFF\MPEPerms\MPEPerms;
+use XackiGiFF\MPEPerms\MPGroup;
 
 
 class MPEPermsAPI {
@@ -52,33 +53,34 @@ class MPEPermsAPI {
 // GroupsAPI
 //
 
-	public function addGroup($groupName) {
+	public function addGroup($groupName): int{
 		return $this->manager->getGroupManagerAPI()->addGroup($groupName);
 	}
 
-	public function removeGroup($groupName) {
-		return $this->manager->getGroupManagerAPI()->removeGroup($groupName);
+	public function getGroups(): array{
+		return $this->manager->getGroupManagerAPI()->getGroups();
 	}
 
-	public function isValidGroupName(){
+	public function isValidGroupName(): int|false{
 		return $this->manager->getGroupManagerAPI()->isValidGroupName();
 	}
 
-	public function updateGroups(){
-		return $this->manager->getGroupManagerAPI()->updateGroups();
+	public function removeGroup($groupName): int{
+		return $this->manager->getGroupManagerAPI()->removeGroup($groupName);
 	}
 
-	public function sortGroupData(){
-		return $this->manager->getGroupManagerAPI()->sortGroupData();
+	public function sortGroupData(): void{
+		$this->manager->getGroupManagerAPI()->sortGroupData();
 	}
 
-	public function getGroups(){
-		return $this->manager->getGroupManagerAPI()->getGroups();
+	public function updateGroups(): void{
+		$this->manager->getGroupManagerAPI()->updateGroups();
 	}
 
 //
 // UtilsAPI
 //
+
 	public function getUtils() {
 		return $this->manager->getUtilsAPI();
 	}

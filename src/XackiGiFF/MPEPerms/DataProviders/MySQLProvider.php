@@ -9,8 +9,7 @@ use XackiGiFF\MPEPerms\task\PPMySQLTask;
 use pocketmine\player\IPlayer;
 use RuntimeException;
 
-class MySQLProvider implements ProviderInterface
-{
+class MySQLProvider implements ProviderInterface {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

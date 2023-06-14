@@ -10,8 +10,7 @@ use pocketmine\player\IPlayer;
 use pocketmine\utils\Config;
 use RuntimeException;
 
-class DefaultProvider implements ProviderInterface
-{
+class DefaultProvider implements ProviderInterface {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

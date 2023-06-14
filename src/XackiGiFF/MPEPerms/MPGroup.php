@@ -5,8 +5,7 @@ namespace XackiGiFF\MPEPerms;
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 
 
-class MPGroup
-{
+class MPGroup {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from PurePerms by #64FF00)
 
@@ -28,19 +27,21 @@ class MPGroup
 		$this->name = $name;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function __toString(){
-		return $this->name;
-	}
+	// This is for what?
+	//
+	// /**
+	//  * @return string
+	//  */
+	// public function __toString(){
+	// 	return $this->name;
+	// }
 
 	/**
 	 * @param MPGroup $group
 	 *
 	 * @return bool
 	 */
-	public function addParent(MPGroup $group){
+	public function addParent(MPGroup $group) {
 		$tempGroupData = $this->getData();
 
 		if($this === $group || in_array($this->getName(), $group->getParentGroups()))
@@ -58,7 +59,7 @@ class MPGroup
 	/**
 	 * @param $levelName
 	 */
-	public function createWorldData($levelName){
+	public function createWorldData($levelName) {
 		if(!isset($this->getData()["worlds"][$levelName])){
 			$tempGroupData = $this->getData();
 
@@ -75,7 +76,7 @@ class MPGroup
 	/**
 	 * @return mixed
 	 */
-	public function getAlias(){
+	public function getAlias() {
 		if($this->getNode("alias") === null)
 			return $this->name;
 
@@ -85,7 +86,7 @@ class MPGroup
 	/**
 	 * @return mixed
 	 */
-	public function getData(){
+	public function getData() {
 		return $this->plugin->getProvider()->getGroupData($this);
 	}
 
@@ -94,7 +95,7 @@ class MPGroup
 	 *
 	 * @return array
 	 */
-	public function getGroupPermissions($levelName = null){
+	public function getGroupPermissions($levelName = null) {
 		
 		$permissions = $levelName !== null ? $this->getWorldData($levelName)["permissions"] : $this->getNode("permissions");
 
@@ -121,7 +122,7 @@ class MPGroup
 	/**
 	 * @return mixed
 	 */
-	public function getName(){
+	public function getName() {
 		return $this->name;
 	}
 
@@ -130,7 +131,7 @@ class MPGroup
 	 *
 	 * @return null|mixed
 	 */
-	public function getNode($node){
+	public function getNode($node) {
 		if(!isset($this->getData()[$node])) return null;
 
 		return $this->getData()[$node];
@@ -139,7 +140,7 @@ class MPGroup
 	/**
 	 * @return MPGroup[]
 	 */
-	public function getParentGroups(){
+	public function getParentGroups() {
 		if($this->parents === []){
 			if(!is_array($this->getNode("inheritance"))){
 				$this->plugin->getLogger()->critical("Invalid 'inheritance' node given to " . __METHOD__);
@@ -162,7 +163,7 @@ class MPGroup
 	 *
 	 * @return null
 	 */
-	public function getWorldData($levelName){
+	public function getWorldData($levelName) {
 		if($levelName === null)
 			return null;
 
@@ -177,7 +178,7 @@ class MPGroup
 	 *
 	 * @return null
 	 */
-	public function getWorldNode($levelName, $node){
+	public function getWorldNode($levelName, $node) {
 		if(!isset($this->getWorldData($levelName)[$node])) return null;
 
 		return $this->getWorldData($levelName)[$node];
@@ -188,7 +189,7 @@ class MPGroup
 	 *
 	 * @return bool
 	 */
-	public function isDefault($levelName = null){
+	public function isDefault($levelName = null) {
 		if($levelName === null){
 			return ($this->getNode("isDefault") === true);
 		}else{
@@ -199,7 +200,7 @@ class MPGroup
 	/**
 	 * @param $node
 	 */
-	public function removeNode($node){
+	public function removeNode($node) {
 		$tempGroupData = $this->getData();
 
 		if(isset($tempGroupData[$node])){
@@ -214,7 +215,7 @@ class MPGroup
 	 *
 	 * @return bool
 	 */
-	public function removeParent(MPGroup $group){
+	public function removeParent(MPGroup $group) {
 		$tempGroupData = $this->getData();
 
 		$tempGroupData["inheritance"] = array_diff($tempGroupData["inheritance"], [$group->getName()]);
@@ -230,7 +231,7 @@ class MPGroup
 	 * @param $levelName
 	 * @param $node
 	 */
-	public function removeWorldNode($levelName, $node){
+	public function removeWorldNode($levelName, $node) {
 		$worldData = $this->getWorldData($levelName);
 
 		if(isset($worldData[$node])){
@@ -243,14 +244,14 @@ class MPGroup
 	/**
 	 * @param array $data
 	 */
-	public function setData(array $data){
+	public function setData(array $data) {
 		$this->plugin->getProvider()->setGroupData($this, $data);
 	}
 
 	/**
 	 * @param null $levelName
 	 */
-	public function setDefault($levelName = null){
+	public function setDefault($levelName = null) {
 		if($levelName === null){
 			$this->setNode("isDefault", true);
 		}else{
@@ -268,7 +269,7 @@ class MPGroup
 	 *
 	 * @return bool
 	 */
-	public function setGroupPermission($permission, $levelName = null){
+	public function setGroupPermission($permission, $levelName = null) {
 		if($levelName == null){
 			$tempGroupData = $this->getData();
 
@@ -292,7 +293,7 @@ class MPGroup
 	 * @param $node
 	 * @param $value
 	 */
-	public function setNode($node, $value){
+	public function setNode($node, $value) {
 		$tempGroupData = $this->getData();
 
 		$tempGroupData[$node] = $value;
@@ -304,7 +305,7 @@ class MPGroup
 	 * @param       $levelName
 	 * @param array $worldData
 	 */
-	public function setWorldData($levelName, array $worldData){
+	public function setWorldData($levelName, array $worldData) {
 		if(isset($this->getData()["worlds"][$levelName])){
 			$tempGroupData = $this->getData();
 
@@ -319,7 +320,7 @@ class MPGroup
 	 * @param $node
 	 * @param $value
 	 */
-	public function setWorldNode($levelName, $node, $value){
+	public function setWorldNode($levelName, $node, $value) {
 		$worldData = $this->getWorldData($levelName);
 
 		$worldData[$node] = $value;
@@ -327,7 +328,7 @@ class MPGroup
 		$this->setWorldData($levelName, $worldData);
 	}
 
-	public function sortPermissions(){
+	public function sortPermissions() {
 		$tempGroupData = $this->getData();
 
 		if(isset($tempGroupData["permissions"])){
@@ -359,7 +360,7 @@ class MPGroup
 	 *
 	 * @return bool
 	 */
-	public function unsetGroupPermission($permission, $levelName = null){
+	public function unsetGroupPermission($permission, $levelName = null) {
 		if($levelName == null){
 			$tempGroupData = $this->getData();
 

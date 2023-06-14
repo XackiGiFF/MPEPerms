@@ -14,8 +14,7 @@ use pocketmine\utils\TextFormat;
 
 use pocketmine\plugin\PluginBase;
 
-class MPInfo extends BaseCommand
-{
+class MPInfo extends BaseCommand {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

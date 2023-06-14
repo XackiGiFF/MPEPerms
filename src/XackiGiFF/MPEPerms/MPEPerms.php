@@ -3,8 +3,10 @@
 namespace XackiGiFF\MPEPerms;
 
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
+use XackiGiFF\MPEPerms\MPGroup;
 
 use XackiGiFF\MPEPerms\DataManager\UserDataManager;
+
 use XackiGiFF\MPEPerms\DataProviders\SQLite3Provider;
 use XackiGiFF\MPEPerms\DataProviders\DefaultProvider;
 use XackiGiFF\MPEPerms\DataProviders\MySQLProvider;
@@ -16,6 +18,7 @@ use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionAttachment;
 use pocketmine\permission\PermissionManager;
+
 use pocketmine\player\IPlayer;
 use pocketmine\world\World;
 use pocketmine\player\Player;
@@ -23,8 +26,7 @@ use pocketmine\plugin\PluginBase;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
-class MPEPerms extends PluginBase
-{
+class MPEPerms extends PluginBase {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -54,8 +56,7 @@ class MPEPerms extends PluginBase
 
     private $attachments = [], $groups = [], $pmDefaultPerms = [];
 
-    public function onLoad(): void
-    {
+    public function onLoad(): void {
         $this->saveDefaultConfig();
 
         $this->api = new MPEPermsAPI($this);
@@ -73,53 +74,17 @@ class MPEPerms extends PluginBase
 		}
     }
     
-    public function onEnable(): void
-    {
+    public function onEnable(): void {
         $this->setProvider();
         $this->registerPlayers();
         $this->api->registerCommands();
         $this->api->startService();
     }
 
-    public function onDisable(): void
-    {
+    public function onDisable(): void {
         $this->unregisterPlayers();
         if($this->isValidProvider())
             $this->provider->close();
-    }
-
-    /**
-     * @param bool $onEnable
-     */
-    private function setProvider($onEnable = true)
-    {
-        $providerName = $this->getConfigValue("data-provider");
-        switch(strtolower($providerName))
-        {
-            case "sqlite3":
-                $provider = new SQLite3Provider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_SQLITE3"));
-                break;
-            case "json":
-                $provider = new JsonProvider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_JSON"));
-                break;
-            case "yamlv1":
-                $provider = new YamlV1Provider($this);
-                if($onEnable === true)
-                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_YAML"));
-                break;
-            default:
-                $provider = new DefaultProvider($this);
-                if($onEnable === true)
-                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
-                break;
-        }
-        if($provider instanceof ProviderInterface)
-            $this->provider = $provider;
-        $this->updateGroups();
     }
 
     /*
@@ -137,55 +102,16 @@ class MPEPerms extends PluginBase
 		return $this->api;
 	}
 
-    public function addGroup($groupName) {
+//
+// GroupsAPI
+//
+
+    public function addGroup($groupName): int{
         return $this->getAPI()->addGroup($groupName);
     }
-    
-    public function getGroups(){
-        return $this->getAPI()->getGroups();
-    }
 
-    public function isValidGroupName($groupName){
-        return $this->getAPI()->isValidGroupName($groupName);
-    }
-
-    public function removeGroup($groupName) {
-        return $this->getAPI()->removeGroup($groupName);
-    }
-
-    public function date2Int($date): int{
-        return $this->getAPI()->getUtils()->date2Int($date);
-    }
-
-    public function sortGroupData(): bool{
-        return $this->getAPI()->sortGroupData($groupName);
-    }
-
-    public function updateGroups(){
-        return $this->getAPI()->updateGroups();
-    }
-
-    /**
-     * @param $key
-     * @return null
-     */
-    public function getConfigValue($key) {
-        $value = $this->getConfig()->getNested($key);
-        if($value === null)
-        {
-            $this->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
-
-            return null;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param null $WorldName
-     * @return MPGroup|null
-     */
-    public function getDefaultGroup($WorldName = null) {
+// TODO
+    public function getDefaultGroup($WorldName = null): MPGroup|null{
         $defaultGroups = [];
         foreach($this->getGroups() as $defaultGroup)
         {
@@ -224,11 +150,8 @@ class MPEPerms extends PluginBase
         return null;
     }
 
-    /**
-     * @param $groupName
-     * @return MPGroup|null
-     */
-    public function getGroup($groupName) {
+// TODO
+    public function getGroup($groupName): MPGroup|null{
         if(!isset($this->groups[$groupName]))
         {
             /** @var MPGroup $group */
@@ -252,17 +175,13 @@ class MPEPerms extends PluginBase
 
         return $group;
     }
-    
-    public function getMessage($node, array $vars = []) {
-        return $this->messages->getMessage($node, $vars);
+
+    public function getGroups(): array{
+        return $this->getAPI()->getGroups();
     }
 
-
-    /**
-     * @param MPGroup $group
-     * @return array
-     */
-    public function getOnlinePlayersInGroup(MPGroup $group) {
+// TODO
+    public function getOnlinePlayersInGroup(MPGroup $group): array{
         $users = [];
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
@@ -277,103 +196,18 @@ class MPEPerms extends PluginBase
         return $users;
     }
 
-    /**
-     * @param IPlayer $player
-     * @param $WorldName
-     * @return array
-     */
-    public function getPermissions(IPlayer $player, $WorldName) {
-        // TODO: Fix this
-        $group = $this->userDataMgr->getGroup($player, $WorldName);
-        $groupPerms = $group->getGroupPermissions($WorldName);
-        $userPerms = $this->userDataMgr->getUserPermissions($player, $WorldName);
-
-        return array_merge($groupPerms, $userPerms);
+    public function isValidGroupName($groupName): int|false{
+        return $this->getAPI()->isValidGroupName($groupName);
     }
 
-    /**
-     * @param $userName
-     * @return Player
-     */
-    public function getPlayer($userName) {
-        $player = $this->getServer()->getPlayerByPrefix($userName);
-        return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
+    public function removeGroup($groupName): int{
+        return $this->getAPI()->removeGroup($groupName);
     }
 
-    /**
-     * @return array
-     */
-    public function getPocketMinePerms() : array {
-        return array_keys(PermissionManager::getInstance()->getPermissions());
+    public function sortGroupData(): void{
+        $this->getAPI()->sortGroupData($groupName);
     }
-
-    /**
-     * @return string
-     */
-    public function getPPVersion() {
-        return $this->getDescription()->getVersion();
-    }
-
-    /**
-     * @return ProviderInterface
-     */
-    public function getProvider() {
-        if(!$this->isValidProvider())
-            $this->setProvider(false);
-
-        return $this->provider;
-    }
-
-    /**
-     * @return UserDataManager
-     */
-    public function getUserDataMgr() {
-        return $this->userDataMgr;
-    }
-
-    /**
-     * @param Player $player
-     * @return null|string
-     */
-    public function getValidUUID(Player $player) : string {
-		return $player->getUniqueId()->toString();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidProvider() {
-        if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
-            return false;
-        return true;
-    }
-
-
-    /**
-     * @param Player $player
-     */
-    public function registerPlayer(Player $player) {
-        $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
-        $uniqueId = $this->getValidUUID($player);
-        if(!isset($this->attachments[$uniqueId]))
-        {
-            $attachment = $player->addAttachment($this);
-            $this->attachments[$uniqueId] = $attachment;
-            $this->updatePermissions($player);
-        }
-    }
-
-    public function registerPlayers() {
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            $this->registerPlayer($player);
-        }
-    }
-
-    /**
-     * @param MPGroup $group
-     * @param $WorldName
-     */
+// TODO
 	public function setDefaultGroup(MPGroup $group, $levelName = null){
 		foreach($this->getGroups() as $currentGroup){
 			if($levelName === null){
@@ -392,21 +226,146 @@ class MPEPerms extends PluginBase
 		$group->setDefault($levelName);
 	}
 
-    /**
-     * @param IPlayer $player
-     * @param MPGroup $group
-     * @param null $WorldName
-     * @param int $time
-     */
+// TODO
     public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
         $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
     }
 
-    /**
-     * @param IPlayer $player
-     * @param string|null $WorldName
-     */
-    public function updatePermissions(IPlayer $player, string $WorldName = null) {
+    public function updateGroups(): void{
+        $this->getAPI()->updateGroups();
+    }
+// TODO
+    public function updatePlayersInGroup(MPGroup $group) {
+        foreach($this->getServer()->getOnlinePlayers() as $player)
+        {
+            if($this->userDataMgr->getGroup($player) === $group)
+                $this->updatePermissions($player);
+        }
+    }
+
+//
+// UtilsAPI
+//
+
+    public function date2Int($date): int{
+        return $this->getAPI()->getUtils()->date2Int($date);
+    }
+
+    public function getPPVersion(): string{
+        return $this->getDescription()->getVersion();
+    }
+
+// Config?
+    public function getConfigValue($key): string|null{
+        $value = $this->getConfig()->getNested($key);
+        if($value === null)
+        {
+            $this->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
+
+            return null;
+        }
+
+        return $value;
+    }
+
+// Visual?
+    public function getMessage($node, array $vars = []) {
+        return $this->messages->getMessage($node, $vars);
+    }
+
+// Players & Permissions
+    public function getPermissions(IPlayer $player, $WorldName): array{
+        // TODO: Fix this
+        $group = $this->userDataMgr->getGroup($player, $WorldName);
+        $groupPerms = $group->getGroupPermissions($WorldName);
+        $userPerms = $this->userDataMgr->getUserPermissions($player, $WorldName);
+
+        return array_merge($groupPerms, $userPerms);
+    }
+
+    public function getPlayer($userName): Player{
+        $player = $this->getServer()->getPlayerByPrefix($userName);
+        return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
+    }
+
+    public function getPocketMinePerms() : array {
+        return array_keys(PermissionManager::getInstance()->getPermissions());
+    }
+
+
+// Provider
+    public function getProvider(): ProviderInterface{
+        if(!$this->isValidProvider())
+            $this->setProvider(false);
+
+        return $this->provider;
+    }
+// Provider
+    public function isValidProvider(): bool{
+        if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
+            return false;
+        return true;
+    }
+//Provider
+    private function setProvider($onEnable = true) {
+        $providerName = $this->getConfigValue("data-provider");
+        switch(strtolower($providerName))
+        {
+            case "sqlite3":
+                $provider = new SQLite3Provider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_SQLITE3"));
+                break;
+            case "json":
+                $provider = new JsonProvider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_JSON"));
+                break;
+            case "yamlv1":
+                $provider = new YamlV1Provider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_YAML"));
+                break;
+            default:
+                $provider = new DefaultProvider($this);
+                if($onEnable === true)
+                    $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
+                break;
+        }
+        if($provider instanceof ProviderInterface)
+            $this->provider = $provider;
+        $this->updateGroups();
+    }
+
+// For API
+    public function getUserDataMgr(): UserDataManager{
+        return $this->userDataMgr;
+    }
+
+// Players & Permissions
+    public function getValidUUID(Player $player) : null|string{
+		return $player->getUniqueId()->toString();
+    }
+
+    public function registerPlayer(Player $player) {
+        $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
+        $uniqueId = $this->getValidUUID($player);
+        if(!isset($this->attachments[$uniqueId]))
+        {
+            $attachment = $player->addAttachment($this);
+            $this->attachments[$uniqueId] = $attachment;
+            $this->updatePermissions($player);
+        }
+    }
+
+    public function registerPlayers() {
+        foreach($this->getServer()->getOnlinePlayers() as $player)
+        {
+            $this->registerPlayer($player);
+        }
+    }
+
+    public function updatePermissions(IPlayer $player, string $WorldName = null): string|null{
         if($player instanceof Player)
         {
             if($this->getConfigValue("enable-multiworld-perms") == null) {
@@ -443,20 +402,6 @@ class MPEPerms extends PluginBase
         }
     }
 
-    /**
-     * @param MPGroup $group
-     */
-    public function updatePlayersInGroup(MPGroup $group) {
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            if($this->userDataMgr->getGroup($player) === $group)
-                $this->updatePermissions($player);
-        }
-    }
-
-    /**
-     * @param Player $player
-     */
     public function unregisterPlayer(Player $player) {
         $this->getLogger()->debug($this->getMessage("logger_messages.unregisterPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);

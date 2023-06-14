@@ -5,8 +5,7 @@ namespace XackiGiFF\MPEPerms;
 use pocketmine\utils\Config;
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 
-class PPMessages extends MPEPermsAPI
-{
+class PPMessages extends MPEPermsAPI {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 

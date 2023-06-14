@@ -9,6 +9,16 @@ use XackiGiFF\MPEPerms\MPGroup;
 use RuntimeException;
 
 class GroupsManagerAPI {
+	/*
+		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
+
+		╔═╗╔═╗╔═══╗╔═══╗     ╔═══╗╔═══╗╔═══╗╔═╗╔═╗╔═══╗
+		║║╚╝║║║╔═╗║║╔══╝     ║╔═╗║║╔══╝║╔═╗║║║╚╝║║║╔═╗║
+		║╔╗╔╗║║╚═╝║║╚══╗     ║╚═╝║║╚══╗║╚═╝║║╔╗╔╗║║╚══╗
+		║║║║║║║╔══╝║╔══╝     ║╔══╝║╔══╝║╔╗╔╝║║║║║║╚══╗║
+		║║║║║║║║───║╚══╗     ║║───║╚══╗║║║╚╗║║║║║║║╚═╝║
+		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
+	*/
 
     const NOT_FOUND = null;
     const INVALID_NAME = -1;
@@ -21,7 +31,7 @@ class GroupsManagerAPI {
     public function __construct(protected MPEPerms $plugin){
 	}
 
-    public function addGroup($groupName) {
+    public function addGroup($groupName): int{
         $groupsData = $this->plugin->getProvider()->getGroupsData();
         if(!$this->isValidGroupName($groupName))
             return self::INVALID_NAME;
@@ -42,7 +52,17 @@ class GroupsManagerAPI {
         return self::SUCCESS;
     }
 
-    public function removeGroup($groupName) {
+    public function getGroups(): array{
+            if($this->isGroupsLoaded !== true)
+                throw new RuntimeException("No groups loaded, maybe a provider error?");
+            return $this->groups;
+    }
+
+    private function isValidGroupName($groupName): int|false{
+        return preg_match('/[0-9a-zA-Z\xA1-\xFE]$/', $groupName);
+    }
+
+    public function removeGroup($groupName): int{
         if(!$this->isValidGroupName($groupName))
             return self::INVALID_NAME;
         $groupsData = $this->plugin->getProvider()->getGroupsData();
@@ -52,6 +72,20 @@ class GroupsManagerAPI {
         $this->plugin->getProvider()->setGroupsData($groupsData);
         $this->updateGroups();
         return self::SUCCESS;
+    }
+
+    public function sortGroupData(): void{
+        foreach($this->getGroups() as $groupName => $mpGroup) {
+            $mpGroup->sortPermissions();
+
+            if($this->plugin->getConfigValue("enable-multiworld-perms")) {
+                /** @var World $World */
+                foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World) {
+                    $WorldName = $World->getDisplayName();
+                    $mpGroup->createWorldData($WorldName);
+                }
+            }
+        }
     }
 
     public function updateGroups(): void{
@@ -69,28 +103,8 @@ class GroupsManagerAPI {
         $this->sortGroupData();
     }
 
-    public function sortGroupData() {
-        foreach($this->getGroups() as $groupName => $mpGroup) {
-            $mpGroup->sortPermissions();
 
-            if($this->plugin->getConfigValue("enable-multiworld-perms")) {
-                /** @var World $World */
-                foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World) {
-                    $WorldName = $World->getDisplayName();
-                    $mpGroup->createWorldData($WorldName);
-                }
-            }
-        }
-    }
 
-    public function getGroups() {
-            if($this->isGroupsLoaded !== true)
-                throw new RuntimeException("No groups loaded, maybe a provider error?");
-            return $this->groups;
-    }
 
-    private function isValidGroupName($groupName){
-        return preg_match('/[0-9a-zA-Z\xA1-\xFE]$/', $groupName);
-    }
 
 }
