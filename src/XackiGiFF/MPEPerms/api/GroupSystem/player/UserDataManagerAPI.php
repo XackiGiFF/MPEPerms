@@ -1,10 +1,10 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\api\player;
+namespace XackiGiFF\MPEPerms\api\GroupSystem\player;
 
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
+use XackiGiFF\MPEPerms\EventManager\GroupChangedEvent;
 
 use pocketmine\player\IPlayer;
 
@@ -47,7 +47,7 @@ class UserDataManagerAPI {
     /**
      * @param IPlayer $player
      * @param null $WorldName
-     * @return MPGroup|null
+     * @return Group|null
      */
     public function getGroup(IPlayer $player, $WorldName = null)
     {
@@ -134,11 +134,11 @@ class UserDataManagerAPI {
 
     /**
      * @param IPlayer $player
-     * @param MPGroup $group
+     * @param Group $group
      * @param $WorldName
      * @param int $time
      */
-    public function setGroup(IPlayer $player, MPGroup $group, $WorldName, $time = -1)
+    public function setGroup(IPlayer $player, Group $group, $WorldName, $time = -1)
     {
         if($WorldName === null)
         {
@@ -153,7 +153,7 @@ class UserDataManagerAPI {
             $this->setWorldData($player, $WorldName, $worldData);
         }
 
-        $event = new MPGroupChangedEvent($this->plugin, $player, $group, $WorldName);
+        $event = new GroupChangedEvent($this->plugin, $player, $group, $WorldName);
 
         $event->call();
     }

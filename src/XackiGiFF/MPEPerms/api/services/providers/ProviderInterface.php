@@ -1,8 +1,8 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\DataProviders;
+namespace XackiGiFF\MPEPerms\api\services\providers;
 
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 
 use pocketmine\player\IPlayer;
 
@@ -18,11 +18,11 @@ interface ProviderInterface {
 		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
 	*/
 
-    public function getGroupData(MPGroup $group);
+    public function getGroupData(Group $group);
     public function getGroupsData();
     public function getPlayerData(IPlayer $player);
     public function getUsers();
-    public function setGroupData(MPGroup $group, array $tempGroupData);
+    public function setGroupData(Group $group, array $tempGroupData);
     public function setGroupsData(array $tempGroupsData);
     public function setPlayerData(IPlayer $player, array $tempPlayerData);
     public function close();

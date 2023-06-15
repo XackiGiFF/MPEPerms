@@ -1,4 +1,4 @@
-# MPErePerms von 64FF00 (xktiverz@gmail.com, @64ff00 für Twitter)
+# MPEPerms von 64FF00 (xktiverz@gmail.com, @64ff00 für Twitter)
 
 # Original German language resource by @Exxarion, reworked by @thebigsmileXD
 
@@ -62,16 +62,17 @@ cmds:
       level_not_exist: "Welt %var0% existiert NICHT."
       no_user_perms: "Spieler %var0% hat keine Nutzerberechtigungen."
       user_perms_list: "Liste aller Nutzerberechtigungen von %var0% (%var1% / %var2%) : "
-  mpinfo:
-    desc: "Zeigt alle MPErePerms Informationen einschließlich Autor, Version und so weiter."
+  ppinfo:
+    desc: "Zeigt alle MPEPerms Informationen einschließlich Autor, Version und so weiter."
     messages:
-      mpinfo_console: "Du nutzt derzeit MPErePerms v%var0% von %var1%."
-      mpinfo_player: "Dieser Server nutzt MPErePerms v%var0% von %var1%."
-  mpreload:
-    desc: "Lädt die Einstellungen von MPErePerms neu."
+      ppinfo_console: "Du nutzt derzeit MPEPerms v%var0% von %var1%."
+      ppinfo_player: "Dieser Server nutzt MPEPerms v%var0% von %var1%."
+      plugin_cmds_list: "Liste aller Plugin-Befehle für %var0%: "
+  ppreload:
+    desc: "Lädt die Einstellungen von MPEPerms neu."
     messages:
-      successfully_reloaded: "Alle Einstellungen von MPErePerms wurden erfolgreich neu geladen."
-  mpsudo:
+      successfully_reloaded: "Alle Einstellungen von MPEPerms wurden erfolgreich neu geladen."
+  ppsudo:
     desc: "Registers or logs into your Noeul account."
     usage: "Usage: /ppsudo <login / register>"
     messages:
@@ -114,7 +115,7 @@ cmds:
       access_denied_02: "You don't have permission to change group of a player with group %var0%."
       group_not_exist: "Gruppe %var0% existiert NICHT."
       level_not_exist: "Welt %var0% existiert NICHT."
-      on_player_group_change: "Deine MPErePerms-Gruppe wurde zu %var0% geändert!"
+      on_player_group_change: "Deine MPEPerms-Gruppe wurde zu %var0% geändert!"
       setgroup_successfully: "Spieler %var0% wurde erfolgreich zur Gruppe hinzugefügt."
   setuperm:
     desc: "Fügt eine Berechtigung zu einem Spieler hinzu."

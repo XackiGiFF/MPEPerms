@@ -1,4 +1,4 @@
-# MPErePerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
+# MPEPerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
 
 # Korean message resource by @64FF00 (GitHub)
 
@@ -64,16 +64,17 @@ cmds:
       level_not_exist: "%var0%이라는 이름을 가진 월드가 존재하지 않습니다."
       no_user_perms: "플레이어 %var0%는 어떠한 퍼미션도 가지고 있지 않습니다."
       user_perms_list: "플레이어 %var0%의 모든 퍼미션 (현재 페이지 %var1% / 모든 페이지 %var2%) : "
-  mpinfo:
-    desc: "MPErePerms 플러그인 정보를 보여줍니다."
+  ppinfo:
+    desc: "MPEPerms 플러그인 정보를 보여줍니다."
     messages:
-      mpinfo_console: "현재 MPErePerms v%var0% 버전을 사용하고 계십니다! (제작자: %var1%)"
-      mpinfo_player: "이 서버는 MPErePerms v%var0% 버전을 사용하고 있습니다. (제작자: %var1%)"
-  mpreload:
-    desc: "모든 MPErePerms 설정 파일들을 다시 로드합니다."
+      ppinfo_console: "현재 MPEPerms v%var0% 버전을 사용하고 계십니다! (제작자: %var1%)"
+      ppinfo_player: "이 서버는 MPEPerms v%var0% 버전을 사용하고 있습니다. (제작자: %var1%)"
+      plugin_cmds_list: "플러그인 %var0%의 모든 명령 (현재 페이지 %var1% / 전체 페이지 %var2%) : "
+  ppreload:
+    desc: "모든 MPEPerms 설정 파일들을 다시 로드합니다."
     messages:
       successfully_reloaded: "모든 설정 파일들이 다시 로드되었습니다."
-  mpsudo:
+  ppsudo:
     desc: "Registers or logs into your Noeul account."
     usage: "Usage: /ppsudo <login / register>"
     messages:

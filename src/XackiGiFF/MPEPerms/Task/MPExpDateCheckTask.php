@@ -36,7 +36,7 @@ class MPExpDateCheckTask extends Task {
             if(time() > $exptime && $exptime !== -1)
             {
                 echo("Время вышло");
-                $WorldName = $this->plugin->getConfigValue("enable-multiworld-perms") ? $player->getWorld()->getDisplayName() : null;
+                $WorldName = $this->plugin->getAPI()->getConfigValue("enable-multiworld-perms") ? $player->getWorld()->getDisplayName() : null;
                 $event = new MPgroupExpiredEvent($this->plugin, $player, $WorldName);
                 $event->call();
             }

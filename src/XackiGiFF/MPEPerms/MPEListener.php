@@ -2,8 +2,8 @@
 
 namespace XackiGiFF\MPEPerms;
 
-use XackiGiFF\MPEPerms\EventManager\MPGroupChangedEvent;
-use XackiGiFF\MPEPerms\EventManager\MPGroupExpiredEvent;
+use XackiGiFF\MPEPerms\EventManager\GroupChangedEvent;
+use XackiGiFF\MPEPerms\EventManager\GroupExpiredEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\server\CommandEvent;
@@ -13,7 +13,7 @@ use pocketmine\lang\Translatable;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class PPListener implements Listener {
+class MPEListener implements Listener {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -34,10 +34,10 @@ class PPListener implements Listener {
     }
 
     /**
-     * @param MPGroupChangedEvent $event
+     * @param GroupChangedEvent $event
      * @priority LOWEST
      */
-    public function onGroupChanged(MPGroupChangedEvent $event)
+    public function onGroupChanged(GroupChangedEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->updatePermissions($player);
@@ -108,7 +108,7 @@ class PPListener implements Listener {
      * @param MPgroupExpiredEvent $event
      * @priority LOWEST
      */
-    public function ongroupExpired(MPGroupExpiredEvent $event)
+    public function ongroupExpired(GroupExpiredEvent $event)
     {
         $player = $event->getPlayer();
         $this->plugin->setGroup($player, $this->plugin->getDefaultGroup());

@@ -31,6 +31,7 @@ class RmGroup extends BaseCommand {
 		// This is where we'll register our arguments and subcommands
 
 		$this->setPermission(MPEPermsPermissions::COMMAND_RMGROUP_PERMISSION);
+		$this->setAliases(["delgroup"]);
 		try {
             $this->registerArgument(0, new RawStringArgument(RmGroup::ARGUMENT_GROUP_NAME));
         } catch (Exception) {

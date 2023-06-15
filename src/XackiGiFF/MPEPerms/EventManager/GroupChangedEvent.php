@@ -2,7 +2,7 @@
 
 namespace XackiGiFF\MPEPerms\EventManager;
 
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
 
 use pocketmine\event\plugin\PluginEvent;
@@ -10,7 +10,7 @@ use pocketmine\event\plugin\PluginEvent;
 use pocketmine\player\IPlayer;
 use pocketmine\world\World;
 
-class MPGroupChangedEvent extends PluginEvent {
+class GroupChangedEvent extends PluginEvent {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -27,15 +27,15 @@ class MPGroupChangedEvent extends PluginEvent {
     /**
      * @param MPEPerms $plugin
      * @param IPlayer $player
-     * @param MPGroup $group
+     * @param Group $group
      * @param $worldName
      */
-    public function __construct(protected MPEPerms $plugin, protected IPlayer $player, protected MPGroup $group, protected ?string $worldName)
+    public function __construct(protected MPEPerms $plugin, protected IPlayer $player, protected Group $group, protected ?string $worldName)
     {
     }
 
 	/**
-     * @return MPGroup
+     * @return Group
      */
     public function getGroup()
     {

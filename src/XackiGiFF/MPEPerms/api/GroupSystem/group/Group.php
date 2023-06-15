@@ -1,11 +1,12 @@
 <?php
 
-namespace XackiGiFF\MPEPerms;
+namespace XackiGiFF\MPEPerms\api\GroupSystem\group;
 
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
+use XackiGiFF\MPEPerms\MPEPerms;
 
 
-class MPGroup {
+class Group {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from PurePerms by #64FF00)
 
@@ -37,19 +38,19 @@ class MPGroup {
 	// }
 
 	/**
-	 * @param MPGroup $group
+	 * @param Group $group
 	 *
 	 * @return bool
 	 */
-	public function addParent(MPGroup $group) {
-		$tempGroupData = $this->getData();
+	public function addParent(Group $group) {
+		$teGroupData = $this->getData();
 
 		if($this === $group || in_array($this->getName(), $group->getParentGroups()))
 			return false;
 
-		$tempGroupData["inheritance"][] = $group->getName();
+		$teGroupData["inheritance"][] = $group->getName();
 
-		$this->setData($tempGroupData);
+		$this->setData($teGroupData);
 
 		$this->plugin->updatePlayersInGroup($this);
 
@@ -61,15 +62,15 @@ class MPGroup {
 	 */
 	public function createWorldData($levelName) {
 		if(!isset($this->getData()["worlds"][$levelName])){
-			$tempGroupData = $this->getData();
+			$teGroupData = $this->getData();
 
-			$tempGroupData["worlds"][$levelName] = [
+			$teGroupData["worlds"][$levelName] = [
 				"isDefault" => false,
 				"permissions" => [
 				]
 			];
 
-			$this->setData($tempGroupData);
+			$this->setData($teGroupData);
 		}
 	}
 
@@ -105,7 +106,7 @@ class MPGroup {
 			return [];
 		}
 
-		/** @var MPGroup $parentGroup */
+		/** @var Group $parentGroup */
 		foreach($this->getParentGroups() as $parentGroup){
 			$parentPermissions = $parentGroup->getGroupPermissions($levelName);
 
@@ -138,7 +139,7 @@ class MPGroup {
 	}
 
 	/**
-	 * @return MPGroup[]
+	 * @return Group[]
 	 */
 	public function getParentGroups() {
 		if($this->parents === []){
@@ -201,26 +202,26 @@ class MPGroup {
 	 * @param $node
 	 */
 	public function removeNode($node) {
-		$tempGroupData = $this->getData();
+		$teGroupData = $this->getData();
 
-		if(isset($tempGroupData[$node])){
-			unset($tempGroupData[$node]);
+		if(isset($teGroupData[$node])){
+			unset($teGroupData[$node]);
 
-			$this->setData($tempGroupData);
+			$this->setData($teGroupData);
 		}
 	}
 
 	/**
-	 * @param MPGroup $group
+	 * @param Group $group
 	 *
 	 * @return bool
 	 */
-	public function removeParent(MPGroup $group) {
-		$tempGroupData = $this->getData();
+	public function removeParent(Group $group) {
+		$teGroupData = $this->getData();
 
-		$tempGroupData["inheritance"] = array_diff($tempGroupData["inheritance"], [$group->getName()]);
+		$teGroupData["inheritance"] = array_diff($teGroupData["inheritance"], [$group->getName()]);
 
-		$this->setData($tempGroupData);
+		$this->setData($teGroupData);
 
 		$this->plugin->updatePlayersInGroup($this);
 
@@ -271,11 +272,11 @@ class MPGroup {
 	 */
 	public function setGroupPermission($permission, $levelName = null) {
 		if($levelName == null){
-			$tempGroupData = $this->getData();
+			$teGroupData = $this->getData();
 
-			$tempGroupData["permissions"][] = $permission;
+			$teGroupData["permissions"][] = $permission;
 
-			$this->setData($tempGroupData);
+			$this->setData($teGroupData);
 		}else{
 			$worldData = $this->getWorldData($levelName);
 
@@ -294,11 +295,11 @@ class MPGroup {
 	 * @param $value
 	 */
 	public function setNode($node, $value) {
-		$tempGroupData = $this->getData();
+		$teGroupData = $this->getData();
 
-		$tempGroupData[$node] = $value;
+		$teGroupData[$node] = $value;
 
-		$this->setData($tempGroupData);
+		$this->setData($teGroupData);
 	}
 
 	/**
@@ -307,11 +308,11 @@ class MPGroup {
 	 */
 	public function setWorldData($levelName, array $worldData) {
 		if(isset($this->getData()["worlds"][$levelName])){
-			$tempGroupData = $this->getData();
+			$teGroupData = $this->getData();
 
-			$tempGroupData["worlds"][$levelName] = $worldData;
+			$teGroupData["worlds"][$levelName] = $worldData;
 
-			$this->setData($tempGroupData);
+			$this->setData($teGroupData);
 		}
 	}
 
@@ -329,29 +330,29 @@ class MPGroup {
 	}
 
 	public function sortPermissions() {
-		$tempGroupData = $this->getData();
+		$teGroupData = $this->getData();
 
-		if(isset($tempGroupData["permissions"])){
-			$tempGroupData["permissions"] = array_unique($tempGroupData["permissions"]);
+		if(isset($teGroupData["permissions"])){
+			$teGroupData["permissions"] = array_unique($teGroupData["permissions"]);
 
-			sort($tempGroupData["permissions"]);
+			sort($teGroupData["permissions"]);
 		}
 
-		$isMultiWorldPermsEnabled = $this->plugin->getConfigValue("enable-multiworld-perms");
+		$isMultiWorldPermsEnabled = $this->plugin->getAPI()->getConfigValue("enable-multiworld-perms");
 
-		if($isMultiWorldPermsEnabled and isset($tempGroupData["worlds"])){
+		if($isMultiWorldPermsEnabled and isset($teGroupData["worlds"])){
 			foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $level){
 				$levelName = $level->getFolderName();
 
-				if(isset($tempGroupData["worlds"][$levelName])){
-					$tempGroupData["worlds"][$levelName]["permissions"] = array_unique($tempGroupData["worlds"][$levelName]["permissions"]);
+				if(isset($teGroupData["worlds"][$levelName])){
+					$teGroupData["worlds"][$levelName]["permissions"] = array_unique($teGroupData["worlds"][$levelName]["permissions"]);
 
-					sort($tempGroupData["worlds"][$levelName]["permissions"]);
+					sort($teGroupData["worlds"][$levelName]["permissions"]);
 				}
 			}
 		}
 
-		$this->setData($tempGroupData);
+		$this->setData($teGroupData);
 	}
 
 	/**
@@ -362,13 +363,13 @@ class MPGroup {
 	 */
 	public function unsetGroupPermission($permission, $levelName = null) {
 		if($levelName == null){
-			$tempGroupData = $this->getData();
+			$teGroupData = $this->getData();
 
-			if(!in_array($permission, $tempGroupData["permissions"])) return false;
+			if(!in_array($permission, $teGroupData["permissions"])) return false;
 
-			$tempGroupData["permissions"] = array_diff($tempGroupData["permissions"], [$permission]);
+			$teGroupData["permissions"] = array_diff($teGroupData["permissions"], [$permission]);
 
-			$this->setData($tempGroupData);
+			$this->setData($teGroupData);
 		}else{
 			$worldData = $this->getWorldData($levelName);
 

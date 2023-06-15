@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XackiGiFF\MPEPerms\api;
+namespace XackiGiFF\MPEPerms\api\GroupSystem;
 
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\MPGroup;
 use RuntimeException;
 
-class GroupsManagerAPI {
+class GroupAPI {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -30,7 +30,7 @@ class GroupsManagerAPI {
     private $userDataMgr;
 
     public function __construct(protected MPEPerms $plugin){
-	}
+    }
 
     public function addGroup($groupName): int{
         $groupsData = $this->plugin->getProvider()->getGroupsData();
@@ -53,7 +53,7 @@ class GroupsManagerAPI {
         return self::SUCCESS;
     }
 
-    public function getDefaultGroup($WorldName = null): MPGroup|null{
+    public function getDefaultGroup($WorldName = null): Group|null{
         $defaultGroups = [];
         foreach($this->getGroups() as $defaultGroup)
         {
@@ -92,10 +92,10 @@ class GroupsManagerAPI {
         return null;
     }
 
-    public function getGroup($groupName): MPGroup|null{
+    public function getGroup($groupName): Group|null{
         if(!isset($this->groups[$groupName]))
         {
-            /** @var MPGroup $group */
+            /** @var Group $group */
             foreach($this->groups as $group)
             {
                 if($group->getAlias() === $groupName)
@@ -105,7 +105,7 @@ class GroupsManagerAPI {
             return null;
         }
 
-        /** @var MPGroup $group */
+        /** @var Group $group */
         $group = $this->groups[$groupName];
 
         if(empty($group->getData()))
@@ -123,7 +123,7 @@ class GroupsManagerAPI {
             return $this->groups;
     }
 
-    public function getOnlinePlayersInGroup(MPGroup $group): array{
+    public function getOnlinePlayersInGroup(Group $group): array{
         $users = [];
         foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
         {
@@ -158,7 +158,7 @@ class GroupsManagerAPI {
         foreach($this->getGroups() as $groupName => $mpGroup) {
             $mpGroup->sortPermissions();
 
-            if($this->plugin->getConfigValue("enable-multiworld-perms")) {
+            if($this->plugin->getAPI()->getConfigValue("enable-multiworld-perms")) {
                 /** @var World $World */
                 foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World) {
                     $WorldName = $World->getDisplayName();
@@ -168,7 +168,7 @@ class GroupsManagerAPI {
         }
     }
 
-	public function setDefaultGroup(MPGroup $group, $levelName = null): void{
+	public function setDefaultGroup(Group $group, $levelName = null): void{
 		foreach($this->getGroups() as $currentGroup){
 			if($levelName === null){
 				$isDefault = $currentGroup->getNode("isDefault");
@@ -186,7 +186,7 @@ class GroupsManagerAPI {
 		$group->setDefault($levelName);
 	}
 
-    public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
+    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1) {
         $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
     }
 
@@ -197,7 +197,7 @@ class GroupsManagerAPI {
         $this->groups = [];
         foreach(array_keys($this->plugin->getProvider()->getGroupsData()) as $groupName)
         {
-            $this->groups[$groupName] = new MPGroup($this->plugin, $groupName);
+            $this->groups[$groupName] = new Group($this->plugin, $groupName);
         }
         if(empty($this->groups))
             throw new RuntimeException("No groups found, I guess there's definitely something wrong with your data provider... *cough cough*");
@@ -205,7 +205,7 @@ class GroupsManagerAPI {
         $this->sortGroupData();
     }
 
-    public function updatePlayersInGroup(MPGroup $group): void{
+    public function updatePlayersInGroup(Group $group): void{
         foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
         {
             if($this->plugin->getUserDataMgr()->getGroup($player) === $group)

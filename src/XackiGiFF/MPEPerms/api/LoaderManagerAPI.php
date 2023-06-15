@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace XackiGiFF\MPEPerms\api;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\PPListener;
+use XackiGiFF\MPEPerms\MPEListener;
 use XackiGiFF\MPEPerms\Task\MPExpDateCheckTask;
-use XackiGiFF\MPEPerms\api\commands\CommandsRegisterAPI;
+use XackiGiFF\MPEPerms\api\services\CommandsRegisterAPI;
 use XackiGiFF\MPEPerms\utils\Utils as UtilsAPI;
-use XackiGiFF\MPEPerms\api\GroupsManagerAPI;
-use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
+
+use XackiGiFF\MPEPerms\api\GroupSystem\GroupAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\player\UserDataManagerAPI;
 
 
 class LoaderManagerAPI {
@@ -46,7 +47,7 @@ class LoaderManagerAPI {
     }
 
     private function loadGroupManagerAPI(){
-        $this->group = new GroupsManagerAPI($this->plugin);
+        $this->group = new GroupAPI($this->plugin);
     }
 
     private function loadUtilsAPI(){
@@ -83,7 +84,7 @@ class LoaderManagerAPI {
 //
 
     public function startService(): void{
-        $this->plugin->getServer()->getPluginManager()->registerEvents(new PPListener($this->plugin), $this->plugin);
+        $this->plugin->getServer()->getPluginManager()->registerEvents(new MPEListener($this->plugin), $this->plugin);
         $this->plugin->getScheduler()->scheduleRepeatingTask(new MPExpDateCheckTask($this->plugin), 20 * 5);
     }
 

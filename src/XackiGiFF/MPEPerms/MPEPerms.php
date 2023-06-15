@@ -3,16 +3,16 @@
 namespace XackiGiFF\MPEPerms;
 
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 
 use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
 
-use XackiGiFF\MPEPerms\DataProviders\SQLite3Provider;
-use XackiGiFF\MPEPerms\DataProviders\DefaultProvider;
-use XackiGiFF\MPEPerms\DataProviders\MySQLProvider;
-use XackiGiFF\MPEPerms\DataProviders\YamlV1Provider;
-use XackiGiFF\MPEPerms\DataProviders\ProviderInterface;
-use XackiGiFF\MPEPerms\DataProviders\JsonProvider;
+use XackiGiFF\MPEPerms\api\services\providers\SQLite3Provider;
+use XackiGiFF\MPEPerms\api\services\providers\DefaultProvider;
+use XackiGiFF\MPEPerms\api\services\providers\MySQLProvider;
+use XackiGiFF\MPEPerms\api\services\providers\YamlV1Provider;
+use XackiGiFF\MPEPerms\api\services\providers\ProviderInterface;
+use XackiGiFF\MPEPerms\api\services\providers\JsonProvider;
 
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
@@ -65,7 +65,7 @@ class MPEPerms extends PluginBase {
         
         $this->messages = new PPMessages($this);
 
-        if($this->getConfigValue("enable-multiworld-perms") === false){
+        if($this->getAPI()->getConfigValue("enable-multiworld-perms") === false){
 			$this->getLogger()->notice($this->getMessage("logger_messages.onLoad_01"));
 			$this->getLogger()->notice($this->getMessage("logger_messages.onLoad_02"));
 		}else{
@@ -97,6 +97,59 @@ class MPEPerms extends PluginBase {
           888  888   d88P     888 888       8888888
     */
 
+//
+// GroupsAPI
+//
+
+    public function addGroup($groupName): int{
+        return $this->getAPI()->addGroup($groupName);
+    }
+
+    public function getDefaultGroup($WorldName = null): Group|null{
+        return $this->getAPI()->getDefaultGroup($WorldName = null);
+    }
+
+    public function getGroup($groupName): Group|null{
+        return $this->getAPI()->getGroup($groupName);
+    }
+
+    public function getGroups(): array{
+        return $this->getAPI()->getGroups();
+    }
+
+    public function getOnlinePlayersInGroup(Group $group): array{
+        return $this->getAPI()->getOnlinePlayersInGroup($group);
+    }
+
+    public function isValidGroupName($groupName): int|false{
+        return $this->getAPI()->isValidGroupName($groupName);
+    }
+
+    public function removeGroup($groupName): int{
+        return $this->getAPI()->removeGroup($groupName);
+    }
+
+    public function sortGroupData(): void{
+        $this->getAPI()->sortGroupData($groupName);
+    }
+
+    public function setDefaultGroup(Group $group, $levelName = null): void{
+        $this->getAPI()->sortGroupData($group, $levelName = null);
+    }
+
+    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1) {
+        $this->getAPI()->setGroup($player, $group, $WorldName, $time);
+    }
+
+    public function updateGroups(): void{
+        $this->getAPI()->updateGroups();
+    }
+
+    public function updatePlayersInGroup(Group $group): void{
+        $this->getAPI()->updatePlayersInGroup();
+    }
+
+    /* End Block Group? Need MORE!!! */
 
 //
 // UtilsAPI
@@ -118,74 +171,6 @@ class MPEPerms extends PluginBase {
         return $this->getAPI()->getUtils()->date2Int($date);
     }
 
-//
-// GroupsAPI
-//
-
-    public function addGroup($groupName): int{
-        return $this->getAPI()->addGroup($groupName);
-    }
-
-    public function getDefaultGroup($WorldName = null): MPGroup|null{
-        return $this->getAPI()->getDefaultGroup($WorldName = null);
-    }
-
-    public function getGroup($groupName): MPGroup|null{
-        return $this->getAPI()->getGroup($groupName);
-    }
-
-    public function getGroups(): array{
-        return $this->getAPI()->getGroups();
-    }
-
-    public function getOnlinePlayersInGroup(MPGroup $group): array{
-        return $this->getAPI()->getOnlinePlayersInGroup($group);
-    }
-
-    public function isValidGroupName($groupName): int|false{
-        return $this->getAPI()->isValidGroupName($groupName);
-    }
-
-    public function removeGroup($groupName): int{
-        return $this->getAPI()->removeGroup($groupName);
-    }
-
-    public function sortGroupData(): void{
-        $this->getAPI()->sortGroupData($groupName);
-    }
-
-    public function setDefaultGroup(MPGroup $group, $levelName = null): void{
-        $this->getAPI()->sortGroupData($group, $levelName = null);
-    }
-
-    public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1) {
-        $this->getAPI()->setGroup($player, $group, $WorldName, $time);
-    }
-
-    public function updateGroups(): void{
-        $this->getAPI()->updateGroups();
-    }
-
-    public function updatePlayersInGroup(MPGroup $group): void{
-        $this->getAPI()->updatePlayersInGroup();
-    }
-
-    /* End Block Group? Need MORE!!! */
-
-// Config?
-    public function getConfigValue($key){
-        $value = $this->getConfig()->getNested($key);
-        if($value === null)
-        {
-            $this->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
-
-            return null;
-        }
-
-        return $value;
-    }
-
-// Visual?
     public function getMessage($node, array $vars = []) {
         return $this->messages->getMessage($node, $vars);
     }
@@ -236,7 +221,7 @@ class MPEPerms extends PluginBase {
     public function updatePermissions(IPlayer $player, string $WorldName = null): void{
         if($player instanceof Player)
         {
-            if($this->getConfigValue("enable-multiworld-perms") == null) {
+            if($this->getAPI()->getConfigValue("enable-multiworld-perms") == null) {
                 $WorldName = null;
             }elseif($WorldName == null) {
                 $WorldName = $player->getWorld()->getDisplayName();
@@ -303,7 +288,7 @@ public function unregisterPlayers() {
 
 // TODO
     private function setProvider($onEnable = true) {
-        $providerName = $this->getConfigValue("data-provider");
+        $providerName = $this->getAPI()->getConfigValue("data-provider");
         switch(strtolower($providerName))
         {
             case "sqlite3":

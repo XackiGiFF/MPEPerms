@@ -1,9 +1,9 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\DataProviders;
+namespace XackiGiFF\MPEPerms\api\services\providers;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 
 use pocketmine\player\IPlayer;
 
@@ -36,10 +36,10 @@ class JsonProvider implements ProviderInterface {
             @mkdir($this->userDataFolder, 0777, true);
     }
     /**
-     * @param MPGroup $group
+     * @param Group $group
      * @return mixed
      */
-    public function getGroupData(MPGroup $group)
+    public function getGroupData(Group $group)
     {
         $groupName = $group->getName();
 
@@ -127,10 +127,10 @@ class JsonProvider implements ProviderInterface {
     }
 
     /**
-     * @param MPGroup $group
+     * @param Group $group
      * @param array $tempGroupData
      */
-    public function setGroupData(MPGroup $group, array $tempGroupData)
+    public function setGroupData(Group $group, array $tempGroupData)
     {
         $groupName = $group->getName();
         $this->groups->set($groupName, $tempGroupData);

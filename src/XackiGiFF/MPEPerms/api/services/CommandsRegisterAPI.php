@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XackiGiFF\MPEPerms\api\commands;
+namespace XackiGiFF\MPEPerms\api\services;
 
 use XackiGiFF\MPEPerms\cmd\AddGroup;
 use XackiGiFF\MPEPerms\cmd\AddParent;
@@ -12,7 +12,7 @@ use XackiGiFF\MPEPerms\cmd\Groups;
 use XackiGiFF\MPEPerms\cmd\GrpInfo;
 use XackiGiFF\MPEPerms\cmd\ListGPerms;
 use XackiGiFF\MPEPerms\cmd\ListUPerms;
-use XackiGiFF\MPEPerms\cmd\MPInfo;
+use XackiGiFF\MPEPerms\cmd\PPInfo;
 use XackiGiFF\MPEPerms\cmd\MPReload;
 use XackiGiFF\MPEPerms\cmd\MPSudo;
 use XackiGiFF\MPEPerms\cmd\RmGroup;
@@ -58,9 +58,9 @@ final class CommandsRegisterAPI {
 				array("class" => 'Groups',
 					   "desc" => "cmds.groups.desc"),
 			"ppinfo"   => 
-				array("class" => 'MPInfo',
-					   "desc" => "cmds.mpinfo.desc"),
-	  		"delgroup" => 
+				array("class" => 'PPInfo',
+					   "desc" => "cmds.ppinfo.desc"),
+	  		"rmgroup" => 
 				array("class" => 'RmGroup',
 					   "desc" => "cmds.rmgroup.desc"),
 			"setgroup" => 

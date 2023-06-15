@@ -1,4 +1,4 @@
-# MPErePerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
+# MPEPerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
 
 # Turkish messages resource by @PainTR (GitHub)
 
@@ -62,16 +62,17 @@ cmds:
       level_not_exist: "%var0% adında bir dünya yok."
       no_user_perms: "%var0% adındaki kullanıcının hiç bir yetkisi bulunmamakta."
       user_perms_list: "Belirlenen kullanıcının bütün yetkileri %var0% (%var1% / %var2%) : "
-  mpinfo:
+  ppinfo:
     desc: "Mevcut PupePerms kurucusunu, sürümünü vb. gösterir."
     messages:
-      mpinfo_console: "Şuan MPErePerms v%var0% sürümünü kullanıyorsunuz. By: %var1%"
-      mpinfo_player: "Bu sunucu MPErePerms v%var0% sürümünü kullanıyor. By: %var1%"
-  mpreload:
-    desc: "Bütün MPErePerms ayarlarını yeniden yükler."
+      ppinfo_console: "Şuan MPEPerms v%var0% sürümünü kullanıyorsunuz. By: %var1%"
+      ppinfo_player: "Bu sunucu MPEPerms v%var0% sürümünü kullanıyor. By: %var1%"
+      plugin_cmds_list: "Atanan eklentinin tüm komutları %var0%: "
+  ppreload:
+    desc: "Bütün MPEPerms ayarlarını yeniden yükler."
     messages:
       successfully_reloaded: "Bütün eklenti ayarları başarı ile yeniden yüklendi."
-  mpsudo:
+  ppsudo:
     desc: "Noeul hesabınıza kayıt olursunuz veya giriş yaparsınız."
     usage: "Kullanış: /ppsudo <login / register>"
     messages:

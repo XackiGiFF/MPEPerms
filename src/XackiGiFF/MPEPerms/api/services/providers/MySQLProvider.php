@@ -1,9 +1,9 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\DataProviders;
+namespace XackiGiFF\MPEPerms\api\services\providers;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\task\PPMySQLTask;
 
 use pocketmine\player\IPlayer;
@@ -30,7 +30,7 @@ class MySQLProvider implements ProviderInterface {
      */
     public function __construct(protected MPEPerms $plugin)
     {
-        $mySQLSettings = $this->plugin->getConfigValue("mysql-settings");
+        $mySQLSettings = $this->plugin->getAPI()->getConfigValue("mysql-settings");
         if(!isset($mySQLSettings["host"]) || !isset($mySQLSettings["port"]) || !isset($mySQLSettings["user"]) || !isset($mySQLSettings["password"]) || !isset($mySQLSettings["db"]))
             throw new RuntimeException("Failed to connect to the MySQL database: Invalid MySQL settings");
         $this->db = new \mysqli($mySQLSettings["host"], $mySQLSettings["user"], $mySQLSettings["password"], $mySQLSettings["db"], $mySQLSettings["port"]);
@@ -49,10 +49,10 @@ class MySQLProvider implements ProviderInterface {
     }
 
     /**
-     * @param MPGroup $group
+     * @param Group $group
      * @return array
      */
-    public function getGroupData(MPGroup $group)
+    public function getGroupData(Group $group)
     {
         $groupName = $group->getName();
         if(!isset($this->getGroupsData()[$groupName]) || !is_array($this->getGroupsData()[$groupName])) return [];
@@ -176,10 +176,10 @@ class MySQLProvider implements ProviderInterface {
     }
 
     /**
-     * @param MPGroup $group
+     * @param Group $group
      * @param array $tempGroupData
      */
-    public function setGroupData(MPGroup $group, array $tempGroupData)
+    public function setGroupData(Group $group, array $tempGroupData)
     {
         $groupName = $group->getName();
         $this->updateGroupData($groupName, $tempGroupData);

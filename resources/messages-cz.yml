@@ -1,4 +1,4 @@
-# MPErePerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
+# MPEPerms by 64FF00 (xktiverz@gmail.com, @64ff00 for Twitter)
 
 # Czech language resource by @Michael2010117
 
@@ -62,16 +62,17 @@ cmds:
       level_not_exist: "Svet %var0% neexistuje."
       no_user_perms: "Hrac %var0% nema zadne uzivatelske opravneni."
       user_perms_list: "Seznam vsech uzivatelskych prav od %var0% (%var1% / %var2%) : "
-  mpinfo:
-    desc: "Ziskejte aktualni MPErePerms informace, vcetne autora, verze, atd."
+  ppinfo:
+    desc: "Ziskejte aktualni MPEPerms informace, vcetne autora, verze, atd."
     messages:
-      mpinfo_console: "Prave pouzivas MPErePerms v%var0% by %var1%."
-      mpinfo_player: "Tento server pouziva MPErePerms v%var0% by %var1%."
-  mpreload:
-    desc: "Znovu nacte vsechny konfigurace MPErePerms."
+      ppinfo_console: "Prave pouzivas MPEPerms v%var0% by %var1%."
+      ppinfo_player: "Tento server pouziva MPEPerms v%var0% by %var1%."
+      plugin_cmds_list: "Seznam všech příkazů pluginu %var0%: "
+  ppreload:
+    desc: "Znovu nacte vsechny konfigurace MPEPerms."
     messages:
       successfully_reloaded: "Vsechny konfigurace a pluginy byly uspesne obnoveny."
-  mpsudo:
+  ppsudo:
     desc: "Registers or logs into your Noeul account."
     usage: "Usage: /ppsudo <login / register>"
     messages:

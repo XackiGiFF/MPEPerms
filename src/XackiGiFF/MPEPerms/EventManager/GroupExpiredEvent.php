@@ -1,11 +1,16 @@
 <?php
-namespace XackiGiFF\MPEPerms\DataProviders;
 
-use XackiGiFF\MPEPerms\MPGroup;
+namespace XackiGiFF\MPEPerms\EventManager;
+
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
-use pocketmine\player\IPlayer;
 
-class SQLite3Provider implements ProviderInterface {
+use pocketmine\event\plugin\PluginEvent;
+
+use pocketmine\player\IPlayer;
+use pocketmine\world\World;
+
+class GroupExpiredEvent extends PluginEvent {
 	/*
 		MPEPerms by XackiGiFF (Remake by @mpe_coders from MPEPerms by #64FF00)
 
@@ -17,46 +22,39 @@ class SQLite3Provider implements ProviderInterface {
 		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
 	*/
 
-    private $db;
-    private $groupsData = [];
+    public static $handlerList = null;
 
     /**
      * @param MPEPerms $plugin
+     * @param IPlayer $player
+     * @param Group $group
+     * @param $worldName
      */
-    public function __construct(protected MPEPerms $plugin)
+    public function __construct(protected MPEPerms $plugin, protected IPlayer $player, protected ?string $worldName)
     {
-        $this->db = new \SQLite3($plugin->getDataFolder()."MPEPerms.db");
-        $this->db->exec("");
-        $this->loadGroupsData();
     }
 
-    public function loadGroupsData()
+    /**
+     * @return World
+     */
+    public function getWorld()
     {
-        //
+        return $this->plugin->getServer()->getLevelByName($this->worldName);
     }
 
-    public function getGroupData(MPGroup $group){
+    /**
+     * @return string
+     */
+    public function getLevelName()
+    {
+        return $this->worldName;
     }
 
-    public function getGroupsData(){
+    /**
+     * @return IPlayer
+     */
+    public function getPlayer()
+    {
+        return $this->player;
     }
-
-    public function getPlayerData(IPlayer $player){
-    }
-
-    public function getUsers(){
-    }
-
-    public function setGroupData(MPGroup $group, array $tempGroupData){
-    }
-
-    public function setGroupsData(array $tempGroupsData){
-    }
-
-    public function setPlayerData(IPlayer $player, array $tempPlayerData){
-    }
-
-    public function close(){
-    }
-
 }

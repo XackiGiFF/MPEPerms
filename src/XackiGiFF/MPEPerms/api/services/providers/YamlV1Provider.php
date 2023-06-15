@@ -1,10 +1,10 @@
 <?php
 
-namespace XackiGiFF\MPEPerms\DataProviders;
+namespace XackiGiFF\MPEPerms\api\services\providers;
 
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\MPGroup;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 
 use pocketmine\player\IPlayer;
 use pocketmine\utils\Config;
@@ -38,11 +38,11 @@ final class YamlV1Provider implements ProviderInterface {
 	}
 
 	/**
-	 * @param MPGroup $group
+	 * @param Group $group
 	 *
 	 * @return mixed
 	 */
-	public function getGroupData(MPGroup $group){
+	public function getGroupData(Group $group){
 		$groupName = $group->getName();
 
 		if(!isset($this->getGroupsData()[$groupName]) || !is_array($this->getGroupsData()[$groupName]))
@@ -120,10 +120,10 @@ final class YamlV1Provider implements ProviderInterface {
 	}
 
 	/**
-	 * @param MPGroup $group
+	 * @param Group $group
 	 * @param array   $tempGroupData
 	 */
-	public function setGroupData(MPGroup $group, array $tempGroupData){
+	public function setGroupData(Group $group, array $tempGroupData){
 		$groupName = $group->getName();
 		$this->groups->set($groupName, $tempGroupData);
 		$this->groups->save();

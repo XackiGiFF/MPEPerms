@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace XackiGiFF\MPEPerms\api;
 
 use XackiGiFF\MPEPerms\MPEPerms;
-use XackiGiFF\MPEPerms\MPGroup;
-use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
+use XackiGiFF\MPEPerms\api\LoaderManagerAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\player\UserDataManagerAPI;
 
 
 class MPEPermsAPI {
@@ -51,6 +52,20 @@ class MPEPermsAPI {
     }
 
 //
+// ServiceGroupAPI
+//
+
+	public function getUserDataMgr(): UserDataManagerAPI{
+		return $this->manager->getUserDataMgr();
+	}
+
+//
+// ServiceRankAPI
+//
+
+
+
+//
 // GroupsAPI
 //
 
@@ -58,11 +73,11 @@ class MPEPermsAPI {
 		return $this->manager->getGroupManagerAPI()->addGroup($groupName);
 	}
 
-	public function getDefaultGroup($WorldName = null): MPGroup|null{
+	public function getDefaultGroup($WorldName = null): Group|null{
 		return $this->manager->getGroupManagerAPI()->getDefaultGroup();
 	}
 
-	public function getGroup($groupName): MPGroup|null{
+	public function getGroup($groupName): Group|null{
 		return $this->manager->getGroupManagerAPI()->getGroup($groupName);
 	}
 
@@ -70,7 +85,7 @@ class MPEPermsAPI {
 		return $this->manager->getGroupManagerAPI()->getGroups();
 	}
 
-	public function getOnlinePlayersInGroup(MPGroup $group): array{
+	public function getOnlinePlayersInGroup(Group $group): array{
 		return $this->manager->getGroupManagerAPI()->getOnlinePlayersInGroup($group);
 	}
 
@@ -86,19 +101,19 @@ class MPEPermsAPI {
 		$this->manager->getGroupManagerAPI()->sortGroupData();
 	}
 
-	public function setDefaultGroup(MPGroup $group, $levelName = null): void{
+	public function setDefaultGroup(Group $group, $levelName = null): void{
 		$this->manager->getGroupManagerAPI()->sortGroupData($group, $levelName = null);
 	}
 
-	public function setGroup(IPlayer $player, MPGroup $group, $WorldName = null, $time = -1){
+	public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1){
 		$this->manager->getGroupManagerAPI()->setGroup($player, $group, $WorldName, $time);
 	}
 
 	public function updateGroups(): void{
 		$this->manager->getGroupManagerAPI()->updateGroups();
 	}
-	
-	public function updatePlayersInGroup(MPGroup $group): void{
+
+	public function updatePlayersInGroup(Group $group): void{
 		$this->manager->getGroupManagerAPI()->updatePlayersInGroup($group);
 	}
 
@@ -109,12 +124,22 @@ class MPEPermsAPI {
 	public function getUtils() {
 		return $this->manager->getUtilsAPI();
 	}
-	public function getUserDataMgr(): UserDataManagerAPI{
-        return $this->manager->getUserDataMgr();
-    }
+
 //
 // Configs & Providers
 //
+
+	public function getConfigValue($key){
+		$value = $this->plugin->getConfig()->getNested($key);
+		if($value === null)
+		{
+			$this->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
+
+			return null;
+		}
+
+		return $value;
+	}
 
 	public function fixConfig(): void{
 		$config = $this->getPlugin()->getConfig();

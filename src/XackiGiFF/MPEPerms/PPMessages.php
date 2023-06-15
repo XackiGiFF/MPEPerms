@@ -73,7 +73,7 @@ class PPMessages extends MPEPermsAPI {
 
     public function loadMessages()
     {       
-        $defaultLang = $this->plugin->getConfigValue("default-language");
+        $defaultLang = $this->plugin->getAPI()->getConfigValue("default-language");
         foreach($this->langList as $langName)
         {
             if(strtolower($defaultLang) == $langName)
