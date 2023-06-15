@@ -84,7 +84,7 @@ $this->pp->removeGroup($groupName);
 $group = $this->pp->getGroup($groupName);
 $this->pp->getUserDataMgr()->setGroup(IPlayer $player, Group $group, $WorldName, $time = -1);
 ```
-And all metods is from stock api function, as in PurePerms. Watch all metods in main class or in  [/XackiGiFF/MPEPerms/api/MPEPermsAPI] (https://github.com/XackiGiFF/MPEPerms/blob/pm5-dev/src/XackiGiFF/MPEPerms/api/MPEPermsAPI.php)
+And all metods is from stock api function, as in PurePerms. Watch all metods in main class or in  [/XackiGiFF/MPEPerms/api/MPEPermsAPI](https://github.com/XackiGiFF/MPEPerms/blob/pm5-dev/src/XackiGiFF/MPEPerms/api/MPEPermsAPI.php)
 
 # Config
 
