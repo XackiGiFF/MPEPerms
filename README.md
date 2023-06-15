@@ -53,6 +53,7 @@ In function onLoad() or onEnable():
   public function onEnable(): void {
     $this->pp = $this->getServer()->getPluginManager()->getPlugin('MPEPerms');
   }
+```
 
 ### 2 way:
 If you want add PurePerms API as $this->pp = new PurePerms, you can write this:
