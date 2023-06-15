@@ -8,7 +8,7 @@ It can be used in conjunction with MPEChat to display players groups in chat.
 
 May be it's time for everyone to use alternatives as PurePerms & PureChat is outdated in a sense of the features itself and the functionality. The official alternatives that are actually better than PurePerms and PureChat are the following: [GroupsAPI](https://github.com/alvin0319/GroupsAPI) & [RankSystem](https://github.com/IvanCraft623/RankSystem)
 
-But... I never gonna give you up, my favorite plugin for permissions manager.
+But... I never gonna give you up, my favorite plugin for permissions manager!
 
 # Commands
 
