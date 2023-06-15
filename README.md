@@ -36,6 +36,56 @@ Command | Description | Permission
 `/unsetuperm <player> <permission> [world]` | Removes a permission from the user. | mpeperms.command.unsetuperm
 `/usrinfo <player> [world]` | Shows info about a user. | mpeperms.command.usrinfo
 
+# API
+## For use API PurePerms we can do:
+### 1 way:
+1. Add use in head your class:
+```
+use XackiGiFF\MPEPerms\MPEPerms;
+```
+Add private var in class:
+```
+class Example extends PluginBase {
+private $pp;
+```
+In function onLoad() or onEnable():
+```
+  public function onEnable(): void {
+    $this->pp = $this->getServer()->getPluginManager()->getPlugin('MPEPerms');
+  }
+
+### 2 way:
+If you want add PurePerms API as $this->pp = new PurePerms, you can write this:
+1. Add use in head your class:
+```
+use XackiGiFF\MPEPerms\api\GroupSystem\PurePerms;
+```
+Add private var in class:
+```
+class Example extends PluginBase {
+private $pp;
+```
+In function onLoad() or onEnable():
+```
+  public function onEnable(): void {
+    $getPurePermsAPI = new PurePerms;
+    $this->pp = $getPurePermsAPI->getAPI();
+  }
+
+```
+And use:
+```
+$this->pp->addGroup();
+$this->pp->getGroup($groupName);
+$this->pp->getGroups();
+$this->pp->removeGroup($groupName);
+
+$group = $this->pp->getGroup($groupName);
+$this->pp->getUserDataMgr()->setGroup(IPlayer $player, Group $group, $WorldName, $time = -1);
+
+And all stock api function, as in PurePerms
+```
+
 # Config
 
 ``` YAML
