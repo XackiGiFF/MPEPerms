@@ -9,7 +9,7 @@ author: "64FF00 & ProjectInfinity | Remake to API 5.0.0 by XackiGiFF"
 website: https://github.com/XackiGiFF/MPEPerms
 permissions:
   MPEPerms:
-    description: 'MPEPerms by XackiGiFF!'
+    description: 'MPEPerms by XackiGiFF'
   mperms.command:
     default: op
     description: Allows you to use all MPEPerms commands.
