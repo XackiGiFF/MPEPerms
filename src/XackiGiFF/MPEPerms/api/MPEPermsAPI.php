@@ -71,52 +71,52 @@ class MPEPermsAPI {
 //
 
 	public function addGroup($groupName): int{
-		return $this->manager->getGroupManagerAPI()->addGroup($groupName);
+		return $this->manager->getGroupAPI()->addGroup($groupName);
 	}
 
 	public function getDefaultGroup($WorldName = null): Group|null{
-		return $this->manager->getGroupManagerAPI()->getDefaultGroup($WorldName);
+		return $this->manager->getGroupAPI()->getDefaultGroup($WorldName);
 	}
 
 	public function getGroup($groupName): Group|null{
-		return $this->manager->getGroupManagerAPI()->getGroup($groupName);
+		return $this->manager->getGroupAPI()->getGroup($groupName);
 	}
 
 	public function getGroups(): array{
-		return $this->manager->getGroupManagerAPI()->getGroups();
+		return $this->manager->getGroupAPI()->getGroups();
 	}
 
 	public function getOnlinePlayersInGroup(Group $group): array{
-		return $this->manager->getGroupManagerAPI()->getOnlinePlayersInGroup($group);
+		return $this->manager->getGroupAPI()->getOnlinePlayersInGroup($group);
 	}
 
 	public function isValidGroupName(): int|false{
-		return $this->manager->getGroupManagerAPI()->isValidGroupName();
+		return $this->manager->getGroupAPI()->isValidGroupName();
 	}
 
 	public function removeGroup($groupName): int{
-		return $this->manager->getGroupManagerAPI()->removeGroup($groupName);
+		return $this->manager->getGroupAPI()->removeGroup($groupName);
 	}
 
 	public function sortGroupData(): void{
-		$this->manager->getGroupManagerAPI()->sortGroupData();
+		$this->manager->getGroupAPI()->sortGroupData();
 	}
 
 	public function setDefaultGroup(Group $group, $levelName = null): void{
-		$this->manager->getGroupManagerAPI()->sortGroupData($group, $levelName = null);
+		$this->manager->getGroupAPI()->sortGroupData($group, $levelName = null);
 	}
 
 	public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
     {
-		$this->manager->getGroupManagerAPI()->setGroup($player, $group, $WorldName, $time);
+		$this->manager->getGroupAPI()->setGroup($player, $group, $WorldName, $time);
 	}
 
 	public function updateGroups(): void{
-		$this->manager->getGroupManagerAPI()->updateGroups();
+		$this->manager->getGroupAPI()->updateGroups();
 	}
 
 	public function updatePlayersInGroup(Group $group): void{
-		$this->manager->getGroupManagerAPI()->updatePlayersInGroup($group);
+		$this->manager->getGroupAPI()->updatePlayersInGroup($group);
 	}
 
 //

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace XackiGiFF\MPEPerms\api\GroupSystem;
 
 use pocketmine\player\IPlayer;
+use pocketmine\world\World;
 use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
 use RuntimeException;
@@ -26,9 +27,8 @@ class GroupAPI {
     const ALREADY_EXISTS = 0;
     const SUCCESS = 1;
 
-    private $isGroupsLoaded = false;
-    private $groups;
-    private $userDataMgr;
+    private bool $isGroupsLoaded = false;
+    private array $groups;
 
     public function __construct(protected MPEPerms $plugin){
     }
@@ -131,7 +131,7 @@ class GroupAPI {
             foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World)
             {
                 $WorldName = $World->getDisplayName();
-                if($this->plugin->api->getUserDataMgr()->getGroup($player, $WorldName) === $group)
+                if($this->plugin->getAPI()->getUserDataMgr()->getGroup($player, $WorldName) === $group)
                     $users[] = $player;
             }
         }

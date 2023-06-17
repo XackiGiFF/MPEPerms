@@ -4,7 +4,7 @@ namespace XackiGiFF\MPEPerms\cmd;
 
 use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
-use XackiGiFF\MPEPerms\api\GroupsManagerAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\GroupAPI;
 
 use CortexPE\Commando\BaseCommand;
 
@@ -48,9 +48,9 @@ class AddGroup extends BaseCommand {
 
 		$result = $this->getOwningPlugin()->addGroup($group);
 
-		if($result === GroupsManagerAPI::SUCCESS){
+		if($result === GroupAPI::SUCCESS){
 			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.group_added_successfully", [$group]) );
-		}elseif($result === GroupsManagerAPI::ALREADY_EXISTS){
+		}elseif($result === GroupAPI::ALREADY_EXISTS){
             $sender->sendMessage(TextFormat::YELLOW . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.group_already_exists", [$group]) );
 		}else{
             $sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . $this->getOwningPlugin()->getMessage("cmds.addgroup.messages.invalid_group_name", [$group]) );

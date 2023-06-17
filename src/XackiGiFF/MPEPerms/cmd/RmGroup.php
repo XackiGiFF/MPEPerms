@@ -4,7 +4,7 @@ namespace XackiGiFF\MPEPerms\cmd;
 
 use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\permissions\MPEPermsPermissions;
-use XackiGiFF\MPEPerms\api\GroupsManagerAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\GroupAPI;
 
 use CortexPE\Commando\BaseCommand;
 
@@ -47,9 +47,9 @@ class RmGroup extends BaseCommand {
 
 		$result = $this->getOwningPlugin()->removeGroup($args["group"]);
 
-		if($result === GroupsManagerAPI::SUCCESS){
+		if($result === GroupAPI::SUCCESS){
 			$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.group_removed_successfully", [$args["group"]]));
-		}elseif($result === GroupsManagerAPI::INVALID_NAME){
+		}elseif($result === GroupAPI::INVALID_NAME){
 			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.invalid_group_name", [$args["group"]]));
 		}else{
 			$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.rmgroup.messages.group_not_exist", [$args["group"]]));

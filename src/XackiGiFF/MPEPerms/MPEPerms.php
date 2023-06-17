@@ -2,10 +2,10 @@
 
 namespace XackiGiFF\MPEPerms;
 
+use XackiGiFF\MPEPerms\api\GroupSystem\player\UserDataManagerAPI;
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
 
 use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
-use XackiGiFF\MPEPerms\api\GroupSystem\player\UserDataManagerAPI;
 
 use XackiGiFF\MPEPerms\api\services\providers\SQLite3Provider;
 use XackiGiFF\MPEPerms\api\services\providers\DefaultProvider;
@@ -44,7 +44,6 @@ class MPEPerms extends PluginBase {
 
 	public MPEPermsAPI $api;
 
-    private array $attachments = [];
 
     public function onLoad(): void {
         $this->saveDefaultConfig();
@@ -170,102 +169,50 @@ class MPEPerms extends PluginBase {
 
 // Players & Permissions
 // TODO
-    public function getPermissions(IPlayer $player, $WorldName): array{
-        // TODO: Fix this
-        $group = $this->getUserDataMgr()->getGroup($player, $WorldName);
-        $groupPerms = $group->getGroupPermissions($WorldName);
-        $userPerms = $this->getUserDataMgr()->getUserPermissions($player, $WorldName);
 
-        return array_merge($groupPerms, $userPerms);
+    public function getPermissions(IPlayer $player, $WorldName): array
+    {
+        return $this->getAPI()->getUserDataMgr()->getPermissions($player, $WorldName);
     }
-// TODO
-    public function getPlayer($userName): Player|IPlayer{
-        $player = $this->getServer()->getPlayerExact($userName);
-        return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
+
+    public function getPlayer($userName): Player|IPlayer
+    {
+        return $this->getAPI()->getUserDataMgr()->getPlayer($userName);
     }
-// TODO
-    public function getPocketMinePerms() : array {
-        return array_keys(PermissionManager::getInstance()->getPermissions());
+
+    public function getPocketMinePerms(): array
+    {
+        return $this->getAPI()->getUserDataMgr()->getPocketMinePerms();
     }
-// TODO
+
     public function getValidUUID(Player $player) : null|string{
-        return $player->getUniqueId()->toString();
+        return $this->getAPI()->getUserDataMgr()->getValidUUID($player);
     }
-// TODO
+
+
     public function registerPlayer(Player $player): void
     {
-        $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
-        $uniqueId = $this->getValidUUID($player);
-        if(!isset($this->attachments[$uniqueId]))
-        {
-            $attachment = $player->addAttachment($this);
-            $this->attachments[$uniqueId] = $attachment;
-            $this->updatePermissions($player);
-        }
+        $this->getAPI()->getUserDataMgr()->registerPlayer($player);
     }
-// TODO
+
     public function registerPlayers(): void
     {
-        foreach($this->getServer()->getOnlinePlayers() as $player)
-        {
-            $this->registerPlayer($player);
-        }
+        $this->getAPI()->getUserDataMgr()->registerPlayers();
     }
 
-// TODO | Fixed
     public function updatePermissions(IPlayer $player, string $WorldName = null): void{
-        if($player instanceof Player)
-        {
-            if($this->getAPI()->getConfigValue("enable-multiworld-perms") == null) {
-                $WorldName = null;
-            }elseif($WorldName == null) {
-                $WorldName = $player->getWorld()->getDisplayName();
-            }
-            $permissions = [];
-            /** @var string $permission */
-            foreach($this->getPermissions($player, $WorldName) as $permission)
-            {
-                if($permission === '*')
-                {
-                    $player->addAttachment($this, DefaultPermissions::ROOT_OPERATOR, true);
-                }
-                else
-                {
-                    $isNegative = str_starts_with($permission, "-");
-                    if($isNegative)
-                        $permission = substr($permission, 1);
-
-                    $permissions[$permission] = !$isNegative;
-                }
-            }
-
-            $permissions[self::CORE_PERM] = true;
-            /* This need run asynk Task */
-            /** @var PermissionAttachment $attachment */
-            $attachment = $player->addAttachment($this->getServer()->getPluginManager()->getPlugin('MPEPerms'));
-            $attachment->clearPermissions();
-            $attachment->setPermissions($permissions); //Tnx you, https://vk.com/stefanfox_dev
-            var_dump($attachment->getPermissions());
-            /* End */
-        }
+        $this->getAPI()->getUserDataMgr()->updatePermissions($player,$WorldName);
     }
-// TODO
+
     public function unregisterPlayer(Player $player): void
     {
-        $this->getLogger()->debug($this->getMessage("logger_messages.unregisterPlayer", [$player->getName()]));
-        $uniqueId = $this->getValidUUID($player);
-        if(isset($this->attachments[$uniqueId]))
-            $player->removeAttachment($this->attachments[$uniqueId]);
-        unset($this->attachments[$uniqueId]);
+        $this->getAPI()->getUserDataMgr()->unregisterPlayer($player);
     }
-// TODO
-public function unregisterPlayers(): void
-{
-    foreach($this->getServer()->getOnlinePlayers() as $player)
+
+    public function unregisterPlayers(): void
     {
-        $this->unregisterPlayer($player);
+        $this->getAPI()->getUserDataMgr()->unregisterPlayers();
     }
-}
 
 // Provider
 // TODO

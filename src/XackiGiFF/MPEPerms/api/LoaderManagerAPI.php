@@ -34,7 +34,7 @@ class LoaderManagerAPI {
     public function __construct(protected MPEPerms $plugin) {
 		$this->loadCommandsRegisterAPI();
         $this->loadUtilsAPI();
-        $this->loadGroupManagerAPI();
+        $this->loadGroupAPI();
         $this->loadUserDataManagerAPI();
     }
 
@@ -47,7 +47,7 @@ class LoaderManagerAPI {
         $this->cmds = new CommandsRegisterAPI($this->plugin);
     }
 
-    private function loadGroupManagerAPI(): void
+    private function loadGroupAPI(): void
     {
         $this->group = new GroupAPI($this->plugin);
     }
@@ -66,7 +66,7 @@ class LoaderManagerAPI {
 // GETTING...
 //
 
-    public function getGroupManagerAPI() {
+    public function getGroupAPI() {
         return $this->group;
     }
 
