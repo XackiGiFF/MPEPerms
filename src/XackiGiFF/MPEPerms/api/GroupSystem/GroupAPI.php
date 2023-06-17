@@ -189,7 +189,7 @@ class GroupAPI {
 
     public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
     {
-        $this->getUserDataMgr()->setGroup($player, $group, $WorldName, $time);
+        $this->plugin->getAPI()->getUserDataMgr()->setGroup($player, $group, $WorldName, $time);
     }
 
     public function updateGroups(): void{
@@ -210,7 +210,7 @@ class GroupAPI {
     public function updatePlayersInGroup(Group $group): void{
         foreach($this->plugin->getServer()->getOnlinePlayers() as $player)
         {
-            if($this->plugin->getUserDataMgr()->getGroup($player) === $group)
+            if($this->plugin->getAPI()->getUserDataMgr()->getGroup($player) === $group)
                 $this->plugin->updatePermissions($player);
         }
     }

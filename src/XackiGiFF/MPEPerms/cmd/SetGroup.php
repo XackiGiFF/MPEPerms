@@ -95,7 +95,7 @@ class SetGroup extends BaseCommand {
 				return;
 			}
 
-			$userGroup = $this->getOwningPlugin()->getUserDataMgr()->getGroup($player, $levelName);
+			$userGroup = $this->getOwningPlugin()->getAPI()->getUserDataMgr()->getGroup($player, $levelName);
 
 			if(isset($tmpSuperAdminRanks[$userGroup->getName()])){
 				$sender->sendMessage(TextFormat::RED . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.access_denied_02", [$userGroup->getName()]));
@@ -104,7 +104,7 @@ class SetGroup extends BaseCommand {
 			}
 		}
 
-		$this->getOwningPlugin()->getUserDataMgr()->setGroup($player, $group, $levelName, $expTime);
+		$this->getOwningPlugin()->getAPI()->getUserDataMgr()->setGroup($player, $group, $levelName, $expTime);
 
 		$sender->sendMessage(TextFormat::GREEN . MPEPerms::MAIN_PREFIX . ' ' . $this->getOwningPlugin()->getMessage("cmds.setgroup.messages.setgroup_successfully", [$player->getName()]));
 
