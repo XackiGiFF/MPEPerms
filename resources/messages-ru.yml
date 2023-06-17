@@ -169,6 +169,7 @@ logger_messages:
   onLoad_03: "Поддержка мульти миров включена."
   registerPlayer: "Регистрация игрока %var0%..."
   setProvider_MySQL: "Тип хранилища данных - MySQL."
+  setProvider_SQLITE3: "Тип хранилища данных - SQLITE3"
   setProvider_YAMLv1: "Тип хранилища данных - YAMLv1."
   setProvider_YAMLv2: "Тип хранилища данных - YAMLv2."
   setProvider_NotFound: "Провайдер данных %var0% не существует. Устанавливается стандартный тип хранилища данных."
