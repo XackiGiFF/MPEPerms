@@ -166,10 +166,9 @@ class MPEPerms extends PluginBase {
     {
         return $this->messages->getMessage($node, $vars);
     }
-
-// Players & Permissions
-// TODO
-
+//
+// PlayerAPI
+//
     public function getPermissions(IPlayer $player, $WorldName): array
     {
         return $this->getAPI()->getUserDataMgr()->getPermissions($player, $WorldName);
