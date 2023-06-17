@@ -9,9 +9,7 @@ use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\server\CommandEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\lang\Translatable;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 
 class MPEListener implements Listener {
 	/*
@@ -37,7 +35,7 @@ class MPEListener implements Listener {
      * @param GroupChangedEvent $event
      * @priority LOWEST
      */
-    public function onGroupChanged(GroupChangedEvent $event)
+    public function onGroupChanged(GroupChangedEvent $event): void
     {
         $player = $event->getPlayer();
         $this->plugin->updatePermissions($player);
@@ -47,7 +45,7 @@ class MPEListener implements Listener {
      * @param EntityTeleportEvent $event
      * @priority MONITOR
      */
-    public function onLevelChange(EntityTeleportEvent $event)
+    public function onLevelChange(EntityTeleportEvent $event): void
     {
         if($event->isCancelled()) return;
         $player = $event->getEntity();
@@ -56,7 +54,8 @@ class MPEListener implements Listener {
         }
     }
 
-    public function onPlayerCommand(CommandEvent $event) {
+    public function onPlayerCommand(CommandEvent $event): void
+    {
         $message = $event->getCommand();
 		$player = $event->getSender();
         // TODO проверка на команды и на то, включен ли NoeulAPI
@@ -88,7 +87,7 @@ class MPEListener implements Listener {
      * @param PlayerLoginEvent $event
      * @priority LOWEST
      */
-    public function onPlayerLogin(PlayerLoginEvent $event)
+    public function onPlayerLogin(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
         $this->plugin->registerPlayer($player);
@@ -98,17 +97,17 @@ class MPEListener implements Listener {
      * @param PlayerQuitEvent $event
      * @priority HIGHEST
      */
-    public function onPlayerQuit(PlayerQuitEvent $event)
+    public function onPlayerQuit(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
         $this->plugin->unregisterPlayer($player);
     }
 
     /**
-     * @param MPgroupExpiredEvent $event
+     * @param GroupExpiredEvent $event
      * @priority LOWEST
      */
-    public function ongroupExpired(GroupExpiredEvent $event)
+    public function ongroupExpired(GroupExpiredEvent $event): void
     {
         $player = $event->getPlayer();
         $this->plugin->setGroup($player, $this->plugin->getDefaultGroup());

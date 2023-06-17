@@ -3,9 +3,9 @@
 namespace XackiGiFF\MPEPerms;
 
 use XackiGiFF\MPEPerms\api\MPEPermsAPI;
-use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 
-use XackiGiFF\MPEPerms\api\player\UserDataManagerAPI;
+use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
+use XackiGiFF\MPEPerms\api\GroupSystem\player\UserDataManagerAPI;
 
 use XackiGiFF\MPEPerms\api\services\providers\SQLite3Provider;
 use XackiGiFF\MPEPerms\api\services\providers\DefaultProvider;
@@ -15,16 +15,12 @@ use XackiGiFF\MPEPerms\api\services\providers\ProviderInterface;
 use XackiGiFF\MPEPerms\api\services\providers\JsonProvider;
 
 use pocketmine\permission\DefaultPermissions;
-use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionAttachment;
 use pocketmine\permission\PermissionManager;
 
 use pocketmine\player\IPlayer;
-use pocketmine\world\World;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use Ramsey\Uuid\Uuid;
-use RuntimeException;
 
 class MPEPerms extends PluginBase {
 	/*
@@ -42,19 +38,13 @@ class MPEPerms extends PluginBase {
 
     const CORE_PERM = "\x70\x70\x65\x72\x6d\x73\x2e\x63\x6f\x6d\x6d\x61\x6e\x64\x2e\x70\x70\x69\x6e\x66\x6f";
 
-    /** @var PPMessages $messages */
-    private $messages;
+    private PPMessages $messages;
 
-    /** @var ProviderInterface $provider */
-    private $provider;
+    private ProviderInterface $provider;
 
-    /** @var UserDataManager $userDataMgr */
-    private $userDataMgr;
+	public MPEPermsAPI $api;
 
-    /** @var MPEPermsAPI $api */
-	public $api;
-
-    private $attachments = [], $groups = [], $pmDefaultPerms = [];
+    private array $attachments = [];
 
     public function onLoad(): void {
         $this->saveDefaultConfig();
@@ -129,7 +119,7 @@ class MPEPerms extends PluginBase {
         return $this->getAPI()->removeGroup($groupName);
     }
 
-    public function sortGroupData(): void{
+    public function sortGroupData(Group $groupName): void{
         $this->getAPI()->sortGroupData($groupName);
     }
 
@@ -137,7 +127,8 @@ class MPEPerms extends PluginBase {
         $this->getAPI()->sortGroupData($group, $levelName = null);
     }
 
-    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1) {
+    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
+    {
         $this->getAPI()->setGroup($player, $group, $WorldName, $time);
     }
 
@@ -146,7 +137,7 @@ class MPEPerms extends PluginBase {
     }
 
     public function updatePlayersInGroup(Group $group): void{
-        $this->getAPI()->updatePlayersInGroup();
+        $this->getAPI()->updatePlayersInGroup($group);
     }
 
     /* End Block Group? Need MORE!!! */
@@ -155,7 +146,8 @@ class MPEPerms extends PluginBase {
 // UtilsAPI
 //
 
-    public function getAPI(): MPEPermsAPI{
+    public function getAPI(): MPEPermsAPI
+    {
         return $this->api;
     }
 
@@ -171,7 +163,8 @@ class MPEPerms extends PluginBase {
         return $this->getAPI()->getUtils()->date2Int($date);
     }
 
-    public function getMessage($node, array $vars = []) {
+    public function getMessage($node, array $vars = []): ?string
+    {
         return $this->messages->getMessage($node, $vars);
     }
 
@@ -187,7 +180,7 @@ class MPEPerms extends PluginBase {
     }
 // TODO
     public function getPlayer($userName): Player|IPlayer{
-        $player = $this->getServer()->getPlayerByPrefix($userName);
+        $player = $this->getServer()->getPlayerExact($userName);
         return $player instanceof Player ? $player : $this->getServer()->getOfflinePlayer($userName);
     }
 // TODO
@@ -199,7 +192,8 @@ class MPEPerms extends PluginBase {
         return $player->getUniqueId()->toString();
     }
 // TODO
-    public function registerPlayer(Player $player) {
+    public function registerPlayer(Player $player): void
+    {
         $this->getLogger()->debug($this->getMessage("logger_messages.registerPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
         if(!isset($this->attachments[$uniqueId]))
@@ -210,7 +204,8 @@ class MPEPerms extends PluginBase {
         }
     }
 // TODO
-    public function registerPlayers() {
+    public function registerPlayers(): void
+    {
         foreach($this->getServer()->getOnlinePlayers() as $player)
         {
             $this->registerPlayer($player);
@@ -236,7 +231,7 @@ class MPEPerms extends PluginBase {
                 }
                 else
                 {
-                    $isNegative = substr($permission, 0, 1) === "-";
+                    $isNegative = str_starts_with($permission, "-");
                     if($isNegative)
                         $permission = substr($permission, 1);
 
@@ -246,7 +241,7 @@ class MPEPerms extends PluginBase {
 
             $permissions[self::CORE_PERM] = true;
             /* This need run asynk Task */
-            /** @var \pocketmine\permission\PermissionAttachment $attachment */
+            /** @var PermissionAttachment $attachment */
             $attachment = $player->addAttachment($this->getServer()->getPluginManager()->getPlugin('MPEPerms'));
             $attachment->clearPermissions();
             $attachment->setPermissions($permissions); //Tnx you, https://vk.com/stefanfox_dev
@@ -255,7 +250,8 @@ class MPEPerms extends PluginBase {
         }
     }
 // TODO
-    public function unregisterPlayer(Player $player) {
+    public function unregisterPlayer(Player $player): void
+    {
         $this->getLogger()->debug($this->getMessage("logger_messages.unregisterPlayer", [$player->getName()]));
         $uniqueId = $this->getValidUUID($player);
         if(isset($this->attachments[$uniqueId]))
@@ -263,7 +259,8 @@ class MPEPerms extends PluginBase {
         unset($this->attachments[$uniqueId]);
     }
 // TODO
-public function unregisterPlayers() {
+public function unregisterPlayers(): void
+{
     foreach($this->getServer()->getOnlinePlayers() as $player)
     {
         $this->unregisterPlayer($player);
@@ -273,7 +270,7 @@ public function unregisterPlayers() {
 // Provider
 // TODO
     public function isValidProvider(): bool{
-        if(!isset($this->provider) || ($this->provider === null) || !($this->provider instanceof ProviderInterface))
+        if(!isset($this->provider))
             return false;
         return true;
     }
@@ -287,10 +284,16 @@ public function unregisterPlayers() {
     }
 
 // TODO
-    private function setProvider($onEnable = true) {
+    private function setProvider($onEnable = true): void
+    {
         $providerName = $this->getAPI()->getConfigValue("data-provider");
         switch(strtolower($providerName))
         {
+            case "mysql":
+                $provider = new MySQLProvider($this);
+                if($onEnable === true)
+                    $this->getLogger()->notice($this->getMessage("logger_messages.setProvider_MySQL"));
+                break;
             case "sqlite3":
                 $provider = new SQLite3Provider($this);
                 if($onEnable === true)
@@ -312,7 +315,6 @@ public function unregisterPlayers() {
                     $this->getLogger()->warning($this->getMessage("logger_messages.setProvider_NotFound", [$providerName]));
                 break;
         }
-        if($provider instanceof ProviderInterface)
             $this->provider = $provider;
         $this->updateGroups();
     }

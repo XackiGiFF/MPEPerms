@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace XackiGiFF\MPEPerms\api;
 
+use pocketmine\player\IPlayer;
 use XackiGiFF\MPEPerms\MPEPerms;
 use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\api\LoaderManagerAPI;
@@ -22,7 +23,7 @@ class MPEPermsAPI {
 		╚╝╚╝╚╝╚╝───╚═══╝     ╚╝───╚═══╝╚╝╚═╝╚╝╚╝╚╝╚═══╝
 	*/
 
-	private $manager;
+	private LoaderManagerAPI $manager;
     public function __construct(protected MPEPerms $plugin) {
 		$this->manager = new LoaderManagerAPI($this->plugin);
     }
@@ -74,7 +75,7 @@ class MPEPermsAPI {
 	}
 
 	public function getDefaultGroup($WorldName = null): Group|null{
-		return $this->manager->getGroupManagerAPI()->getDefaultGroup();
+		return $this->manager->getGroupManagerAPI()->getDefaultGroup($WorldName);
 	}
 
 	public function getGroup($groupName): Group|null{
@@ -105,7 +106,8 @@ class MPEPermsAPI {
 		$this->manager->getGroupManagerAPI()->sortGroupData($group, $levelName = null);
 	}
 
-	public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1){
+	public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
+    {
 		$this->manager->getGroupManagerAPI()->setGroup($player, $group, $WorldName, $time);
 	}
 
@@ -133,7 +135,7 @@ class MPEPermsAPI {
 		$value = $this->plugin->getConfig()->getNested($key);
 		if($value === null)
 		{
-			$this->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
+			$this->plugin->getLogger()->warning($this->getMessage("logger_messages.getConfigValue_01", [$key]));
 
 			return null;
 		}

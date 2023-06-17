@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace XackiGiFF\MPEPerms\api\GroupSystem;
 
+use pocketmine\player\IPlayer;
 use XackiGiFF\MPEPerms\api\GroupSystem\group\Group;
 use XackiGiFF\MPEPerms\MPEPerms;
 use RuntimeException;
@@ -130,7 +131,7 @@ class GroupAPI {
             foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World)
             {
                 $WorldName = $World->getDisplayName();
-                if($this->plugin->userDataMgr->getGroup($player, $WorldName) === $group)
+                if($this->plugin->api->getUserDataMgr()->getGroup($player, $WorldName) === $group)
                     $users[] = $player;
             }
         }
@@ -186,7 +187,8 @@ class GroupAPI {
 		$group->setDefault($levelName);
 	}
 
-    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1) {
+    public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
+    {
         $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
     }
 

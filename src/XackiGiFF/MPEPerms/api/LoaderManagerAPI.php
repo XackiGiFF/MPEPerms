@@ -29,7 +29,7 @@ class LoaderManagerAPI {
     private $cmds;
     private $utils;
     private $group;
-    private $userDataMgr;
+    private UserDataManagerAPI $userDataMgr;
 
     public function __construct(protected MPEPerms $plugin) {
 		$this->loadCommandsRegisterAPI();
@@ -42,19 +42,23 @@ class LoaderManagerAPI {
 // LOADING...
 //
 
-    private function loadCommandsRegisterAPI(){
+    private function loadCommandsRegisterAPI(): void
+    {
         $this->cmds = new CommandsRegisterAPI($this->plugin);
     }
 
-    private function loadGroupManagerAPI(){
+    private function loadGroupManagerAPI(): void
+    {
         $this->group = new GroupAPI($this->plugin);
     }
 
-    private function loadUtilsAPI(){
+    private function loadUtilsAPI(): void
+    {
         $this->utils = new UtilsAPI($this->plugin);
     }
 
-    private function loadUserDataManagerAPI(){
+    private function loadUserDataManagerAPI(): void
+    {
         $this->userDataMgr = new UserDataManagerAPI($this->plugin);
     }
 
