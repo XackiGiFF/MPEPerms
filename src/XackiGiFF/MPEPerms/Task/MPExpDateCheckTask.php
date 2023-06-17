@@ -2,7 +2,7 @@
 
 namespace XackiGiFF\MPEPerms\Task;
 
-use XackiGiFF\MPEPerms\EventManager\MPgroupExpiredEvent;
+use XackiGiFF\MPEPerms\EventManager\GroupExpiredEvent;
 use XackiGiFF\MPEPerms\MPEPerms;
 
 use pocketmine\scheduler\Task;
@@ -35,9 +35,8 @@ class MPExpDateCheckTask extends Task {
 
             if(time() > $exptime && $exptime !== -1)
             {
-                echo("Время вышло");
                 $WorldName = $this->plugin->getAPI()->getConfigValue("enable-multiworld-perms") ? $player->getWorld()->getDisplayName() : null;
-                $event = new MPgroupExpiredEvent($this->plugin, $player, $WorldName);
+                $event = new GroupExpiredEvent($this->plugin, $player, $WorldName);
                 $event->call();
             }
         }

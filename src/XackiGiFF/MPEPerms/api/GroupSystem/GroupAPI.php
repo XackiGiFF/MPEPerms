@@ -189,7 +189,7 @@ class GroupAPI {
 
     public function setGroup(IPlayer $player, Group $group, $WorldName = null, $time = -1): void
     {
-        $this->userDataMgr->setGroup($player, $group, $WorldName, $time);
+        $this->getUserDataMgr()->setGroup($player, $group, $WorldName, $time);
     }
 
     public function updateGroups(): void{
