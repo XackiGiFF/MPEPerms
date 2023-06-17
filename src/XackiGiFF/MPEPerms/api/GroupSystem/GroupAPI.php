@@ -70,14 +70,14 @@ class GroupAPI {
         {
             if(count($defaultGroups) > 1)
             {
-                $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_01"));
+                $this->plugin->getLogger()->warning($this->plugin->getMessage("logger_messages.getDefaultGroup_01"));
             }
-            elseif(count($defaultGroups) <= 0)
+            elseif(count($defaultGroups) < 1)
             {
-                $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getDefaultGroup_02"));
+                $this->plugin->getLogger()->warning($this->plugin->getMessage("logger_messages.getDefaultGroup_02"));
             }
 
-            $this->plugin->getLogger()->info($this->getMessage("logger_messages.getDefaultGroup_03"));
+            $this->plugin->getLogger()->info($this->plugin->getMessage("logger_messages.getDefaultGroup_03"));
 
             foreach($this->getGroups() as $tempGroup)
             {
@@ -102,7 +102,7 @@ class GroupAPI {
                 if($group->getAlias() === $groupName)
                     return $group;
             }
-            $this->plugin->getLogger()->debug($this->getMessage("logger_messages.getGroup_01", [$groupName]));
+            $this->plugin->getLogger()->debug($this->plugin->getMessage("logger_messages.getGroup_01", [$groupName]));
             return null;
         }
 
@@ -111,7 +111,7 @@ class GroupAPI {
 
         if(empty($group->getData()))
         {
-            $this->plugin->getLogger()->warning($this->getMessage("logger_messages.getGroup_02", [$groupName]));
+            $this->plugin->getLogger()->warning($this->plugin->getMessage("logger_messages.getGroup_02", [$groupName]));
             return null;
         }
 
