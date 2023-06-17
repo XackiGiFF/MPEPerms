@@ -143,7 +143,7 @@ class GroupAPI {
         return preg_match('/[0-9a-zA-Z\xA1-\xFE]$/', $groupName);
     }
 
-    public function removeGroup($groupName): int{
+    public function removeGroup($groupName): int|null{
         if(!$this->isValidGroupName($groupName))
             return self::INVALID_NAME;
         $groupsData = $this->plugin->getProvider()->getGroupsData();
@@ -160,7 +160,6 @@ class GroupAPI {
             $mpGroup->sortPermissions();
 
             if($this->plugin->getAPI()->getConfigValue("enable-multiworld-perms")) {
-                /** @var World $World */
                 foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $World) {
                     $WorldName = $World->getDisplayName();
                     $mpGroup->createWorldData($WorldName);
